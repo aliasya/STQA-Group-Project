@@ -1,0 +1,106 @@
+﻿Test case,Feature,Actual result,Status,Defect ID
+TC-BB-001,Registration — create an account using valid details,"After submitting valid registration details, the application opened the My Tasks page and displayed the signed-in username member2_qa01.",Pass,N/A
+TC-BB-002,"Login — authenticate a 
+registered user","After entering the registered username and correct password, the application returned to the My Tasks page.",Pass,N/A
+TC-BB-003,Login — reject an incorrect  password,"The application rejected the incorrect 
+password and displayed “Invalid username or password.” The user remained on the login page.",Pass,N/A
+TC-BB-004,Registration — minimum password length,"Registration with the 8-character 
+password Abcd123! was rejected. The application remained on the registration page and displayed “Password must be at least 8 characters.”",Fail,BUG-001
+TC-BB-005,Registration — password length just above minimum,Registration succeeded with a 9-character password. The application opened My Tasks and displayed the signed-in username user_boundary08.,Pass,N/A
+TC-BB-006,"Registration — reject a 
+password below the minimum length",Registration with the 7-character password Abcd12! was rejected. The application displayed “Password must be at least 8 characters.”,Pass,N/A
+TC-BB-007,"Registration — minimum 
+username length","Registration with username ab was rejected. The application displayed “Username must be 3-20 characters (letters, numbers, underscore).”",Pass,N/A
+TC-BB-008,"Registration — minimum 
+username length","Registration with the 3-character username succeeded, and the application opened the My Tasks page.",Pass,N/A
+TC-BB-009,"Registration — maximum 
+username length","Registration with username abcdefghijklmnopqrst (20 characters) 
+succeeded. The application opened the My Tasks page.",Pass,N/A
+TC-BB-010,"Registration — maximum 
+username length","Registration with the 21-character 
+username abcdefghijklmnopqrstu was rejected. The application displayed “Username must be 3-20 characters (letters, numbers, underscore).”",Pass,N/A
+TC-BB-011,"Registration — permitted 
+username characters","Registration with username 
+member@qa was rejected. The application displayed “Username must be 3-20 characters (letters, numbers, underscore).”",Pass,N/A
+TC-BB-012,"Task creation — valid task 
+without a due date","The task Test 2 Revision appeared in 
+My Tasks with category Study, no due date, and urgency “No due date.”",Pass,N/A
+TC-BB-013,"Task urgency — task due 
+today","The task was created with due date 
+2026-11-15, matching the computer’s current date, but its urgency was displayed as “Overdue” instead of “Due Today.”",Fail,BUG-002
+TC-BB-014,"Task urgency — due 
+tomorrow","The task appeared with due date 
+2026-11-16 and urgency “Due Soon.”",Pass,N/A
+TC-BB-015,"Task urgency — upper 
+boundary of Due Soon","The task appeared with due date 
+2026-11-17 and urgency “Due Soon.”",Pass,N/A
+TC-BB-016,"Task urgency — lower 
+boundary of Upcoming",The task appeared with due date 2026-11-18 and urgency “Upcoming.”,Pass,N/A
+TC-BB-017,"Task urgency — past due 
+date","The task appeared with due date 
+2026-11-14 and urgency “Overdue.”",Pass,N/A
+TC-BB-018,"Task completion — open 
+to done","After marking QA Overdue Yesterday 01 
+completed, its urgency changed from “Overdue” to “Done.” The task appeared when the Done-status filter was applied.",Pass,N/A
+TC-BB-019,"Task completion — done to 
+open","After reopening QA Overdue Yesterday 
+01, its urgency changed to “Overdue.” The task appeared under the Open-status filter and was absent under the Done-status filter.",Pass,N/A
+TC-BB-020,"Task filtering — combine 
+category and status","With category Study and status Open 
+selected and the title-search field empty, QA Overdue Yesterday 01 appeared in the filtered results.",Pass,N/A
+TC-BB-021,"Task filtering — matching 
+category but non-matching status","After QA Overdue Yesterday 01 was 
+marked Done, it did not appear when category Study and status Open were applied with an empty title-search field.",Pass,N/A
+TC-BB-022,"Task filtering — non-
+matching category but matching status","QA Filter Work 01, with category Work 
+and status Open, did not appear when category Study and status Open were applied with an empty title-search field.",Pass,N/A
+TC-BB-023,Task filtering — non-matching category and status,"QA Filter Work 01, with category Work and status Done, did not appear when category Study and status Open were applied with an empty title-search field.",Pass,N/A
+TC-BB-024,"Task editing — update title, 
+description and category","The title was updated to QA Edited Task 01, the description to Updated during manual edit testing, and the category to Personal. The updated values remained saved after refreshing and reopening Edit. The task still displayed “Done.”",Pass,N/A
+TC-BB-025,Task search — existing title,Searching for QA Edited Task 01 with All categories and All statuses selected returned the matching task. No non-matching tasks were displayed.,Pass,N/A
+TC-BB-026,"Task search — no matching 
+title","Searching for ZZZ_NoSuchTask_926 with 
+All categories and All statuses selected returned no task rows. The application displayed “No tasks match your filters.”",Pass,N/A
+TC-BB-027,Task deletion,"After deleting QA Edited Task 01, the task 
+remained absent after refreshing. Searching for its title with All categories and All statuses selected returned no matching task.",Pass ,N/A
+TC-GUI-001,My Tasks — desktop layout,"The My Tasks page displayed the navigation links, page heading, New Task button, category/status filters, search field and task table without visible overlap or clipping. Task details aligned beneath the appropriate column headings.",Pass,N/A
+TC-GUI-002,New Task — form layout,"The New Task page displayed the Title, Description, Category and Due Date controls with readable labels above them. The Create Task and Cancel controls were visible. No overlapping or clipped content was observed in the desktop layout.",Pass,N/A
+TC-GUI-003,"New Task — Cancel 
+navigation","After entering QA Cancel Check
+ 01 and clicking Cancel, the application returned to My Tasks. Searching for the title with All categories and All statuses selected returned no matching task.",Pass,N/A
+TC-GUI-004,"New Task — required-title 
+feedback","Clicking Create Task with the Title 
+field empty prevented submission. The New Task form remained open, focus was placed in the Title field, and the validation message “Please fill out this field.” appeared.",Pass,N/A
+TC-GUI-005,"Dashboard — navigation and 
+desktop layout","Clicking Dashboard opened the dashboard page. The heading, navigation links and five summary cards displayed readable labels and values without visible overlap or clipping. The Completed (last 7 days) label wrapped within its card.",Pass,N/A
+TC-GUI-006,Login — desktop form layout,"The login page displayed the Log 
+in heading, labelled Username and Password fields, Log in button and Register link clearly. The form controls remained within their container, with no visible overlap or clipping.",Pass,N/A
+TC-GUI-007,"Registration — desktop 
+layout and navigation","Clicking Register opened the 
+registration page. The heading, Username and Password fields, input guidance, Register button and Log in link displayed without visible overlap or clipping. Clicking Log in returned to the login page.",Pass,N/A
+TC-ACC-001,Login — keyboard operation and visible focus,"The Username field, 
+Password field and Log in button were reached using the keyboard, with visible focus. Pressing Enter on the Log in button submitted the credentials and opened My Tasks.",Pass,N/A
+TC-ACC-002,"New Task — keyboard 
+navigation and visible focus","The New Task form was 
+opened and navigated using the keyboard. All form controls were reachable with visible focus, and forward and backward navigation was possible without becoming trapped. Activating Cancel using the keyboard returned to My Tasks.",Pass,N/A
+TC-ACC-003,"My Tasks — content 
+and controls at 200% zoom","At 200% browser zoom,
+ clicking New Task opened the task-creation form, and clicking Cancel returned to My Tasks successfully.",Pass,N/A
+TC-ACC-004,"Task urgency and 
+completion — alternatives to colour","All displayed urgency and 
+completion badges contained descriptive text labels. The completed task also displayed a tick mark. The inspected states were therefore distinguishable without relying only on colour.",Pass,N/A
+TC-ACC-005,"New Task — label 
+activation","Clicking the Title, Description, Category and Due Date labels did not activate their corresponding controls. Inspection of the copied HTML confirmed that all four labels lacked for attributes, their controls lacked id attributes, and none of the controls was nested inside its label.",Fail,"Pending team 
+allocation"
+TC-ACC-006,"New Task — Title label 
+text contrast","The Title label used text colour 
+rgb(29, 29, 31) against the enclosing form’s white background, rgb(255, 255, 255). At a font size of 14.4px and weight of 600, the calculated contrast ratio was 16.83:1, exceeding the 4.5:1 minimum for normal-sized text.",Pass,N/A
+TC-COMP-001,"My Tasks — Chrome/
+Edge compatibility","In Microsoft Edge 
+157.0.4341.46 (64-bit), the My Tasks page displayed without observed overlap or clipping. With All categories and All statuses selected, searching for Test 2 Revision returned the matching task.",Pass,N/A
+TC-COMP-002,"New Task form — Edge 
+compatibility","In Microsoft Edge 
+157.0.4341.46 (64-bit), the New Task form displayed correctly without observed overlap or clipping. After entering QA Edge Cancel 01, clicking Cancel returned to My Tasks. Searching for that title with All categories and All statuses selected returned no matching task.",Pass,N/A
+TC-COMP-003,"Dashboard — Edge 
+compatibility","In Microsoft Edge 
+157.0.4341.46 (64-bit), the dashboard displayed all five summary cards with readable labels and values, without observed overlap or clipping. Clicking Tasks returned to My Tasks.",Pass,N/A

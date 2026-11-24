@@ -1,0 +1,63 @@
+﻿Workbook sheet,Row,Test case,Recorded status,Figure,Caption,Image path,Mapping note
+Test Cases,3,TC-BB-001,Pass,1,Register Account by Inputting Username and Password,01_Black_Box/Figures/TC-BB-001_1.png,Matched by workbook row and vertical order
+Test Cases,3,TC-BB-001,Pass,2,Registration Success and Redirects to Main Page,01_Black_Box/Figures/TC-BB-001_2.png,Matched by workbook row and vertical order
+Test Cases,4,TC-BB-002,Pass,3,Login using Registered Credentials,01_Black_Box/Figures/TC-BB-002_3.png,Matched by workbook row and vertical order
+Test Cases,4,TC-BB-002,Pass,4,Valid Login and Redirect to Main Page,01_Black_Box/Figures/TC-BB-002_4.png,Matched by workbook row and vertical order
+Test Cases,5,TC-BB-003,Pass,5,Invalid Password,01_Black_Box/Figures/TC-BB-003_5.png,Matched by workbook row and vertical order
+Test Cases,6,TC-BB-004,Fail,6,Password within 8 Characters Rejected,01_Black_Box/Figures/TC-BB-004_6.png,Matched by workbook row and vertical order
+Test Cases,7,TC-BB-005,Pass,7,Password Accepted and Redirect to Main Page,01_Black_Box/Figures/TC-BB-005_7.png,Matched by workbook row and vertical order
+Test Cases,8,TC-BB-006,Pass,8,Password within 7 Characters Rejected,01_Black_Box/Figures/TC-BB-006_8.png,Matched by workbook row and vertical order
+Test Cases,9,TC-BB-007,Pass,9,Input Username with only 2 characters,01_Black_Box/Figures/TC-BB-007_9.png,Matched by workbook row and vertical order
+Test Cases,9,TC-BB-007,Pass,10,Username with 2 Characters Rejected,01_Black_Box/Figures/TC-BB-007_10.png,Matched by workbook row and vertical order
+Test Cases,10,TC-BB-008,Pass,11,Input Username with 3 Characters,01_Black_Box/Figures/TC-BB-008_11.png,Matched by workbook row and vertical order
+Test Cases,10,TC-BB-008,Pass,12,Username with 3 Characters Accepted and Redirect to Main Page,01_Black_Box/Figures/TC-BB-008_12.png,Matched by workbook row and vertical order
+Test Cases,11,TC-BB-009,Pass,13,Input Username with 20 Characters,01_Black_Box/Figures/TC-BB-009_13.png,Matched by workbook row and vertical order
+Test Cases,11,TC-BB-009,Pass,14,Username with 20 Characters Accepted and Redirect to Main Page,01_Black_Box/Figures/TC-BB-009_14.png,Matched by workbook row and vertical order
+Test Cases,12,TC-BB-010,Pass,15,Input Username with 21 Characters,01_Black_Box/Figures/TC-BB-010_15.png,Matched by workbook row and vertical order
+Test Cases,12,TC-BB-010,Pass,16,Username with 21 Characters Rejected,01_Black_Box/Figures/TC-BB-010_16.png,Matched by workbook row and vertical order
+Test Cases,13,TC-BB-011,Pass,17,Input Username with Invalid '@' Character,01_Black_Box/Figures/TC-BB-011_17.png,Matched by workbook row and vertical order
+Test Cases,13,TC-BB-011,Pass,18,Invalid Username Character and Credentials Rejected,01_Black_Box/Figures/TC-BB-011_18.png,Matched by workbook row and vertical order
+Test Cases,14,TC-BB-012,Pass,19,Task Created with No Due Date Assigned,01_Black_Box/Figures/TC-BB-012_19.png,Matched by workbook row and vertical order
+Test Cases,14,TC-BB-012,Pass,20,Created Task Appeared in Main Page 'My Tasks',01_Black_Box/Figures/TC-BB-012_20.png,Matched by workbook row and vertical order
+Test Cases,15,TC-BB-013,Fail,Anchor-1,Workbook screenshot 1 anchored to TC-BB-013; original figure number not verified,01_Black_Box/Figures/TC-BB-013_Anchor-1.png,Image and caption counts differ on this row; check adjacent rows and workbook placement before assigning figure numbers.
+Test Cases,15,TC-BB-013,Fail,Anchor-2,Workbook screenshot 2 anchored to TC-BB-013; original figure number not verified,01_Black_Box/Figures/TC-BB-013_Anchor-2.png,Image and caption counts differ on this row; check adjacent rows and workbook placement before assigning figure numbers.
+Test Cases,15,TC-BB-013,Fail,Anchor-3,Workbook screenshot 3 anchored to TC-BB-013; original figure number not verified,01_Black_Box/Figures/TC-BB-013_Anchor-3.png,Image and caption counts differ on this row; check adjacent rows and workbook placement before assigning figure numbers.
+Test Cases,15,TC-BB-013,Fail,21,New Task Created with Due Date Today,,Original workbook caption; image pairing needs review.
+Test Cases,15,TC-BB-013,Fail,22,Created Task Appears in Main Page,,Original workbook caption; image pairing needs review.
+Test Cases,16,TC-BB-014,Pass,Anchor-1,Workbook screenshot 1 anchored to TC-BB-014; original figure number not verified,01_Black_Box/Figures/TC-BB-014_Anchor-1.png,Image and caption counts differ on this row; check adjacent rows and workbook placement before assigning figure numbers.
+Test Cases,16,TC-BB-014,Pass,23,New Task Created with Due Date Tomorrow,,Original workbook caption; image pairing needs review.
+Test Cases,16,TC-BB-014,Pass,24,Created Task Appears in Main Page with Urgency 'Due Soon',,Original workbook caption; image pairing needs review.
+Test Cases,17,TC-BB-015,Pass,25,New Task Created with Due Date Two Days from Current Date,01_Black_Box/Figures/TC-BB-015_25.png,Matched by workbook row and vertical order
+Test Cases,17,TC-BB-015,Pass,26,Created Task Appears in Main Page with Urgency 'Due Soon',01_Black_Box/Figures/TC-BB-015_26.png,Matched by workbook row and vertical order
+Test Cases,18,TC-BB-016,Pass,27,New Task Created with Due Date Three Days from Current Date,01_Black_Box/Figures/TC-BB-016_27.png,Matched by workbook row and vertical order
+Test Cases,18,TC-BB-016,Pass,28,Created Task Appears in Main Page with Urgency 'Upcoming',01_Black_Box/Figures/TC-BB-016_28.png,Matched by workbook row and vertical order
+Test Cases,19,TC-BB-017,Pass,29,New Task Created with Due Date One Day before Current Date,01_Black_Box/Figures/TC-BB-017_29.png,Matched by workbook row and vertical order
+Test Cases,19,TC-BB-017,Pass,30,Created Task Appears in Main Page with Urgency 'Overdue',01_Black_Box/Figures/TC-BB-017_30.png,Matched by workbook row and vertical order
+Test Cases,20,TC-BB-018,Pass,31,Task Changes from Open to Done,01_Black_Box/Figures/TC-BB-018_31.png,Matched by workbook row and vertical order
+Test Cases,21,TC-BB-019,Pass,32,Task Not Appear Reopened Under Filter 'Open',01_Black_Box/Figures/TC-BB-019_32.png,Matched by workbook row and vertical order
+Test Cases,21,TC-BB-019,Pass,33,Task Absent Under Filter 'Done',01_Black_Box/Figures/TC-BB-019_33.png,Matched by workbook row and vertical order
+Test Cases,22,TC-BB-020,Pass,34,Task Appear in Category 'Study' and 'Open',01_Black_Box/Figures/TC-BB-020_34.png,Matched by workbook row and vertical order
+Test Cases,23,TC-BB-021,Pass,35,Task Not Appear in Category 'Study' and 'Open',01_Black_Box/Figures/TC-BB-021_35.png,Matched by workbook row and vertical order
+Test Cases,24,TC-BB-022,Pass,36,Task Not Appear in Category 'Work' and 'Open',01_Black_Box/Figures/TC-BB-022_36.png,Matched by workbook row and vertical order
+Test Cases,25,TC-BB-023,Pass,37,Task marked as 'Done',01_Black_Box/Figures/TC-BB-023_37.png,Matched by workbook row and vertical order
+Test Cases,25,TC-BB-023,Pass,38,Task Not Appear after Reopened in Category 'Work' and 'Open',01_Black_Box/Figures/TC-BB-023_38.png,Matched by workbook row and vertical order
+Test Cases,26,TC-BB-024,Pass,39,Updated Task Edited,01_Black_Box/Figures/TC-BB-024_39.png,Matched by workbook row and vertical order
+Test Cases,26,TC-BB-024,Pass,40,Updated Task Remained Saved and Display 'Done' in Main Page,01_Black_Box/Figures/TC-BB-024_40.png,Matched by workbook row and vertical order
+Test Cases,27,TC-BB-025,Pass,41,Search Results Return Matching Task,01_Black_Box/Figures/TC-BB-025_41.png,Matched by workbook row and vertical order
+Test Cases,28,TC-BB-026,Pass,42,Search Results Return No Match,01_Black_Box/Figures/TC-BB-026_42.png,Matched by workbook row and vertical order
+Test Cases,29,TC-BB-027,Pass ,43,Delete Warning Bar Appears,01_Black_Box/Figures/TC-BB-027_43.png,Matched by workbook row and vertical order
+Test Cases,29,TC-BB-027,Pass ,44,Deleted Task Absent,01_Black_Box/Figures/TC-BB-027_44.png,Matched by workbook row and vertical order
+GUI Tests,3,TC-GUI-001,Pass,G-1,Desktop Displaying Task List,03_Special_Testing/GUI_Compatibility/Member2_Figures/GUI/TC-GUI-001_G-1.png,Matched by workbook row and vertical order
+GUI Tests,4,TC-GUI-002,Pass,G-2,New Task Form Layout,03_Special_Testing/GUI_Compatibility/Member2_Figures/GUI/TC-GUI-002_G-2.png,Matched by workbook row and vertical order
+GUI Tests,5,TC-GUI-003,Pass,G-3,Search for the cancelled task title returned no match,03_Special_Testing/GUI_Compatibility/Member2_Figures/GUI/TC-GUI-003_G-3.png,Matched by workbook row and vertical order
+GUI Tests,6,TC-GUI-004,Pass,G-4,Empty Title Validation,03_Special_Testing/GUI_Compatibility/Member2_Figures/GUI/TC-GUI-004_G-4.png,Matched by workbook row and vertical order
+GUI Tests,7,TC-GUI-005,Pass,G-5,Dashboard Layout,03_Special_Testing/GUI_Compatibility/Member2_Figures/GUI/TC-GUI-005_G-5.png,Matched by workbook row and vertical order
+GUI Tests,8,TC-GUI-006,Pass,G-6,Login Page Layout,03_Special_Testing/GUI_Compatibility/Member2_Figures/GUI/TC-GUI-006_G-6.png,Matched by workbook row and vertical order
+GUI Tests,9,TC-GUI-007,Pass,G-7,Registration Page Layout,03_Special_Testing/GUI_Compatibility/Member2_Figures/GUI/TC-GUI-007_G-7.png,Matched by workbook row and vertical order
+Accessibility Test,3,TC-ACC-001,Pass,A-1,Button Includes Visible Focus Indication when Using Tab key,03_Special_Testing/Usability_Accessibility/Member2_Figures/Accessibility/TC-ACC-001_A-1.png,Matched by workbook row and vertical order
+Accessibility Test,4,TC-ACC-002,Pass,A-2,Visible keyboard focus on a New Task control,03_Special_Testing/Usability_Accessibility/Member2_Figures/Accessibility/TC-ACC-002_A-2.png,Matched by workbook row and vertical order
+Accessibility Test,5,TC-ACC-003,Pass,A-3,My Tasks Page Layout at 200% Zoom Setting,03_Special_Testing/Usability_Accessibility/Member2_Figures/Accessibility/TC-ACC-003_A-3.png,Matched by workbook row and vertical order
+Accessibility Test,6,TC-ACC-004,Pass,A-4,Urgency Displayed and Completion Badges Displayed on My Task,03_Special_Testing/Usability_Accessibility/Member2_Figures/Accessibility/TC-ACC-004_A-4.png,Matched by workbook row and vertical order
+Compatibility Test,3,TC-COMP-001,Pass,C-1,Page Layout Appears in Microsoft Edge,03_Special_Testing/GUI_Compatibility/Member2_Figures/Compatibility/TC-COMP-001_C-1.png,Matched by workbook row and vertical order
+Compatibility Test,4,TC-COMP-002,Pass,C-2,Edge search returned no matching task after cancellation,03_Special_Testing/GUI_Compatibility/Member2_Figures/Compatibility/TC-COMP-002_C-2.png,Matched by workbook row and vertical order
+Compatibility Test,5,TC-COMP-003,Pass,C-3,All Cards Displayed Correctly in Dashboard Layout,03_Special_Testing/GUI_Compatibility/Member2_Figures/Compatibility/TC-COMP-003_C-3.png,Matched by workbook row and vertical order
