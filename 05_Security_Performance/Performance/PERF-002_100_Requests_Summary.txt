@@ -1,0 +1,14 @@
+Performance measurements recorded from actual local testing (not a production benchmark)
+
+GET /api/categories, 100 requests per worker configuration
+Workers 1: 9.88 ms average; 100.89 requests/s; 0.00% errors
+Workers 2: 8.53 ms average; 232.85 requests/s; 0.00% errors
+Workers 4: 9.97 ms average; 390.30 requests/s; 0.00% errors
+
+GET /api/dashboard, authenticated; 100 requests per worker configuration
+Workers 1: 7.00 ms average; 142.15 requests/s; 0.00% errors
+Workers 2: 14.78 ms average; 133.34 requests/s; 0.00% errors
+Workers 4: 15.99 ms average; 241.58 requests/s; 0.00% errors
+
+Total in conversation: 840 requests, 0 recorded errors (60 baseline + 180 repeat + 300 categories + 300 dashboard).
+Limitations: local Flask development server, short tests, no steady-state / production capacity inference.

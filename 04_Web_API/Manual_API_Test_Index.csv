@@ -1,0 +1,24 @@
+﻿Test ID,Scenario,Expected HTTP,Observed HTTP,Result,Defect ID
+API-001,Unauthenticated task access,401,401,Pass,
+API-002,Retrieve categories,200,200,Pass,
+API-003,Registration missing data,400,400,Pass,
+API-004,Valid registration,201,201,Pass,
+API-005,Valid login,200,200,Pass,
+API-006,Retrieve tasks authenticated,200,200,Pass,
+API-007,Create task,201,201,Pass,
+API-008,Retrieve created task,200,200,Pass,
+API-009,Update task,200,200,Pass,
+API-010,Complete task,200,200,Pass,
+API-011,Delete owned task,200,200,Pass,
+API-012,Get deleted task,404,404,Pass,
+API-013,Create task missing title,400,400,Pass,
+API-014,Invalid login,401,401,Pass,
+API-015,Eight-character password registration,201,400,Fail,BUG-001
+API-016,Duplicate username registration,400 or 409,201,Fail,BUG-004
+API-017,Cross-user task retrieval,403 or 404,404,Pass,
+API-018,Owner retrieves own task,200,200,Pass,
+API-019,Cross-user task modification,403 or 404,404,Pass,
+API-020,Verify task unchanged,200,200,Pass,
+API-021,Cross-user deletion,403 or 404,200,Fail,BUG-005
+API-022,Owner verifies task retained after unauthorised deletion,200,404,Fail,BUG-005
+API-023,Authenticated dashboard,200,200,Pass,

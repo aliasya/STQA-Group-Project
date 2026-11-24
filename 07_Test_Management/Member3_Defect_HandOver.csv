@@ -1,0 +1,6 @@
+﻿Defect ID,Title,Actual behavior,Affected module/endpoint,Proposed severity,Evidence files,Status
+BUG-001,Password boundary,8 character password rejected,"is_valid_password, POST /api/register",Moderate,WB-001; API-015; AUTO-003,Confirmed
+BUG-002,Due today urgency,Task due today classified Overdue,compute_urgency,Moderate,WB-001; WB-005,Confirmed
+BUG-003,Seven-day completion boundary,Exactly 7 days ago excluded,completed_in_last_n_days,Minor,WB-001,Confirmed
+BUG-004,Duplicate usernames,A second account with same username is accepted,POST /api/register,Moderate,API-016; AUTO-004,Confirmed
+BUG-005,Cross-user deletion,Authenticated User B can delete User A task,DELETE /api/tasks/<id>,Critical (proposed),API-021; API-022; AUTO-002,Confirmed

@@ -1,0 +1,15 @@
+﻿Auto ID,PyTest function,Mapped manual tests,Observed result,Defect ID
+AUTO-001,test_unauthorized_task_access,API-001,Pass,
+AUTO-002,test_registration_missing_data,API-003,Pass,
+AUTO-003,test_valid_registration,API-004,Pass,
+AUTO-004,test_valid_login,API-005,Pass,
+AUTO-005,test_create_task,API-007,Pass,
+AUTO-006,test_get_created_task,API-008,Pass,
+AUTO-007,test_update_task,API-009,Pass,
+AUTO-008,test_complete_task,API-010,Pass,
+AUTO-009,test_delete_task,API-011 / API-012,Pass,
+AUTO-010,test_unauthorized_task_deletion,API-021 / API-022,Fail,BUG-005
+AUTO-011,test_password_minimum_boundary,API-015,Fail,BUG-001
+AUTO-012,test_duplicate_username_registration,API-016,Fail,BUG-004
+AUTO-013,test_invalid_login,API-014,Pass,
+AUTO-014,test_create_task_without_title,API-013,Pass,
