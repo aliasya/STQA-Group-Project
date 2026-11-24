@@ -1,0 +1,43 @@
+# Week 9 - CI/CD example (Member 1): continuous testing for PyTodo Pro
+# Fast regression gate on every push / pull request; full suite nightly.
+name: PyTodo Pro QA
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 18 * * *"        # nightly full run (02:00 Malaysia time)
+
+jobs:
+  regression-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-test.txt
+      # Known open defects are strict xfail -> green now, red as soon as a defect is fixed or a new bug appears
+      - run: pytest -m "regression and not ui" -v
+
+  full-suite:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-test.txt
+      - name: Regression incl. Selenium UI (Chrome is preinstalled on ubuntu-latest)
+        run: pytest -m regression -v
+      - name: Coverage of the regression suite (fail if it drops below 75 %)
+        run: pytest -m regression --cov=app --cov-branch --cov-report=html --cov-fail-under=75
+      - name: Detection suites (security, API) - failures = open defects, reported not blocking
+        run: pytest 05_Security_Performance/Security _BACKUP_Members_2_3_4/04_Web_API --junitxml=detection.xml || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qa-reports
+          path: |
+            htmlcov/
+            detection.xml

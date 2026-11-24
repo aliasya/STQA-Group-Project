@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+app/pytodo_pro.db

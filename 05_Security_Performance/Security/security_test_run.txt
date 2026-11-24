@@ -1,0 +1,129 @@
+============================= test session starts ==============================
+
+05_Security_Performance/Security/test_security.py::test_TC_SEC_001_wrong_password_is_rejected_with_generic_message PASSED [  4%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_002_repeated_failed_logins_are_throttled FAILED [  9%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_003_session_is_invalid_after_logout PASSED [ 13%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_004_duplicate_username_cannot_be_registered FAILED [ 18%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_005_user_cannot_delete_another_users_task FAILED [ 22%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_006_user_cannot_update_another_users_task PASSED [ 27%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_007_search_parameter_is_not_sql_injectable FAILED [ 31%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_008_single_quote_in_search_does_not_crash FAILED [ 36%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_009_task_title_is_html_escaped FAILED [ 40%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_010_state_changing_forms_have_csrf_token FAILED [ 45%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_011_passwords_are_stored_hashed PASSED [ 50%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_012_session_cookie_is_httponly PASSED [ 54%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_013_secret_key_not_hardcoded_and_debug_off FAILED [ 59%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_014_errors_do_not_leak_internal_details FAILED [ 63%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_015_oversized_title_is_rejected FAILED [ 68%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_016_protected_pages_redirect_when_logged_out[/] PASSED [ 72%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_016_protected_pages_redirect_when_logged_out[/dashboard] PASSED [ 77%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_016_protected_pages_redirect_when_logged_out[/tasks/new] PASSED [ 81%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_017_protected_api_requires_login[get-/api/tasks] PASSED [ 86%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_017_protected_api_requires_login[post-/api/tasks] PASSED [ 90%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_017_protected_api_requires_login[get-/api/dashboard] PASSED [ 95%]
+05_Security_Performance/Security/test_security.py::test_TC_SEC_017_protected_api_requires_login[delete-/api/tasks/1] PASSED [100%]
+
+=================================== FAILURES ===================================
+E   AssertionError: no throttling, codes={401}
+    assert (429 in [401, 401, 401, 401, 401, 401, ...] or 401 == 423)
+05_Security_Performance/Security/test_security.py:35: AssertionError: no throttling, codes={401}
+E   AssertionError: assert 201 in (400, 409)
+     +  where 201 = <WrapperTestResponse streamed [201 CREATED]>.status_code
+     +    where <WrapperTestResponse streamed [201 CREATED]> = register(<FlaskClient <Flask 'app'>>, 'alice', 'differentpw1')
+05_Security_Performance/Security/test_security.py:47: AssertionError: assert 201 in (400, 409)
+E   AssertionError: alice's task was deleted by another user
+    assert 404 == 200
+     +  where 404 = <WrapperTestResponse streamed [404 NOT FOUND]>.status_code
+     +    where <WrapperTestResponse streamed [404 NOT FOUND]> = get('/api/tasks/1')
+     +      where get = <FlaskClient <Flask 'app'>>.get
+05_Security_Performance/Security/test_security.py:55: AssertionError: alice's task was deleted by another user
+E   AssertionError: SQL injection leaked another user's task
+    assert 'alice salary review' not in ['alice salary review']
+05_Security_Performance/Security/test_security.py:70: AssertionError: SQL injection leaked another user's task
+E   assert 500 == 200
+     +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+     +    where <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]> = get('/api/tasks', query_string={'q': "Alia's"})
+     +      where get = <FlaskClient <Flask 'app'>>.get
+----------------------------- Captured stderr call -----------------------------
+[2026-11-24 20:42:22,257] ERROR in app: Exception on /api/tasks [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "app/app.py", line 130, in wrapper
+    return f(*args, **kwargs)
+  File "app/app.py", line 384, in api_list_tasks
+    rows = db.execute(query, params).fetchall()
+           ~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: near "s": syntax error
+05_Security_Performance/Security/test_security.py:75: assert 500 == 200
+E   AssertionError: script tag rendered unescaped in task list
+    assert "<script>ale...s')</script>" not in '<!doctype h...dy>\n</html>'
+      
+      "<script>alert('xss')</script>" is contained here:
+        <!doctype html>
+        <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <title>Tasks — PyTodo Pro</title>...
+      
+      ...Full output truncated (80 lines hidden), use '-vv' to show
+05_Security_Performance/Security/test_security.py:83: AssertionError: script tag rendered unescaped in task list
+E   assert 'csrf' in '<!doctype html>\n<html lang="en">\n<head>\n    <meta charset="utf-8">\n    <title>tasks — pytodo pro</title>\n    <link rel="stylesheet" href="/static/style.css">\n</head>\n<body>\n    <nav class="topnav">\n        <a class="brand" href="/">pytodo pro</a>\n        \n        <div class="nav-links">\n            <a href="/">tasks</a>\n            <a href="/dashboard">dashboard</a>\n            <span class="nav-user">alice</span>\n            <a href="/logout">log out</a>\n        </div>\n        \n    </nav>\n    <div class="container">\n        \n<div class="page-header">\n    <h1>my tasks</h1>\n    <a class="btn" href="/tasks/new">+ new task</a>\n</div>\n\n<form method="get" class="filters">\n    <select name="category" onchange="this.form.submit()">\n        <option value="">all categories</option>\n        \n        <option value="personal" >personal</option>\n        \n        <option value="study" >study</option>\n        \n        <option value="urgent" >urgent</option>\n        \n        <option value="work" >work</option>\n        \n    </select>\n    <select name="status" onchange="this.form.submit()">\n        <option value="">all statuses</option>\n        <option valu...ic/style.css">\n</head>\n<body>\n    <nav class="topnav">\n        <a class="brand" href="/">pytodo pro</a>\n        \n        <div class="nav-links">\n            <a href="/">tasks</a>\n            <a href="/dashboard">dashboard</a>\n            <span class="nav-user">alice</span>\n            <a href="/logout">log out</a>\n        </div>\n        \n    </nav>\n    <div class="container">\n        \n<h1>new task</h1>\n<form method="post" class="task-form">\n    <label>title</label>\n    <input type="text" name="title" value="" required>\n\n    <label>description</label>\n    <textarea name="description" rows="3"></textarea>\n\n    <label>category</label>\n    <select name="category_id">\n        <option value="">none</option>\n        \n        <option value="2" >personal</option>\n        \n        <option value="3" >study</option>\n        \n        <option value="4" >urgent</option>\n        \n        <option value="1" >work</option>\n        \n    </select>\n\n    <label>due date</label>\n    <input type="date" name="due_date" value="">\n\n    <button type="submit">create task</button>\n    <a class="btn-secondary" href="/">cancel</a>\n</form>\n\n    </div>\n</body>\n</html>'
+     +  where '<!doctype html>\n<html lang="en">\n<head>\n    <meta charset="utf-8">\n    <title>tasks — pytodo pro</title>\n    <link rel="stylesheet" href="/static/style.css">\n</head>\n<body>\n    <nav class="topnav">\n        <a class="brand" href="/">pytodo pro</a>\n        \n        <div class="nav-links">\n            <a href="/">tasks</a>\n            <a href="/dashboard">dashboard</a>\n            <span class="nav-user">alice</span>\n            <a href="/logout">log out</a>\n        </div>\n        \n    </nav>\n    <div class="container">\n        \n<div class="page-header">\n    <h1>my tasks</h1>\n    <a class="btn" href="/tasks/new">+ new task</a>\n</div>\n\n<form method="get" class="filters">\n    <select name="category" onchange="this.form.submit()">\n        <option value="">all categories</option>\n        \n        <option value="personal" >personal</option>\n        \n        <option value="study" >study</option>\n        \n        <option value="urgent" >urgent</option>\n        \n        <option value="work" >work</option>\n        \n    </select>\n    <select name="status" onchange="this.form.submit()">\n        <option value="">all statuses</option>\n        <option valu...ic/style.css">\n</head>\n<body>\n    <nav class="topnav">\n        <a class="brand" href="/">pytodo pro</a>\n        \n        <div class="nav-links">\n            <a href="/">tasks</a>\n            <a href="/dashboard">dashboard</a>\n            <span class="nav-user">alice</span>\n            <a href="/logout">log out</a>\n        </div>\n        \n    </nav>\n    <div class="container">\n        \n<h1>new task</h1>\n<form method="post" class="task-form">\n    <label>title</label>\n    <input type="text" name="title" value="" required>\n\n    <label>description</label>\n    <textarea name="description" rows="3"></textarea>\n\n    <label>category</label>\n    <select name="category_id">\n        <option value="">none</option>\n        \n        <option value="2" >personal</option>\n        \n        <option value="3" >study</option>\n        \n        <option value="4" >urgent</option>\n        \n        <option value="1" >work</option>\n        \n    </select>\n\n    <label>due date</label>\n    <input type="date" name="due_date" value="">\n\n    <button type="submit">create task</button>\n    <a class="btn-secondary" href="/">cancel</a>\n</form>\n\n    </div>\n</body>\n</html>' = <built-in method lower of str object at 0x180f7eb0>()
+     +    where <built-in method lower of str object at 0x180f7eb0> = '<!doctype html>\n<html lang="en">\n<head>\n    <meta charset="utf-8">\n    <title>Tasks — PyTodo Pro</title>\n    <link rel="stylesheet" href="/static/style.css">\n</head>\n<body>\n    <nav class="topnav">\n        <a class="brand" href="/">PyTodo Pro</a>\n        \n        <div class="nav-links">\n            <a href="/">Tasks</a>\n            <a href="/dashboard">Dashboard</a>\n            <span class="nav-user">alice</span>\n            <a href="/logout">Log out</a>\n        </div>\n        \n    </nav>\n    <div class="container">\n        \n<div class="page-header">\n    <h1>My Tasks</h1>\n    <a class="btn" href="/tasks/new">+ New Task</a>\n</div>\n\n<form method="get" class="filters">\n    <select name="category" onchange="this.form.submit()">\n        <option value="">All categories</option>\n        \n        <option value="Personal" >Personal</option>\n        \n        <option value="Study" >Study</option>\n        \n        <option value="Urgent" >Urgent</option>\n        \n        <option value="Work" >Work</option>\n        \n    </select>\n    <select name="status" onchange="this.form.submit()">\n        <option value="">All statuses</option>\n        <option valu...ic/style.css">\n</head>\n<body>\n    <nav class="topnav">\n        <a class="brand" href="/">PyTodo Pro</a>\n        \n        <div class="nav-links">\n            <a href="/">Tasks</a>\n            <a href="/dashboard">Dashboard</a>\n            <span class="nav-user">alice</span>\n            <a href="/logout">Log out</a>\n        </div>\n        \n    </nav>\n    <div class="container">\n        \n<h1>New Task</h1>\n<form method="post" class="task-form">\n    <label>Title</label>\n    <input type="text" name="title" value="" required>\n\n    <label>Description</label>\n    <textarea name="description" rows="3"></textarea>\n\n    <label>Category</label>\n    <select name="category_id">\n        <option value="">None</option>\n        \n        <option value="2" >Personal</option>\n        \n        <option value="3" >Study</option>\n        \n        <option value="4" >Urgent</option>\n        \n        <option value="1" >Work</option>\n        \n    </select>\n\n    <label>Due Date</label>\n    <input type="date" name="due_date" value="">\n\n    <button type="submit">Create Task</button>\n    <a class="btn-secondary" href="/">Cancel</a>\n</form>\n\n    </div>\n</body>\n</html>'.lower
+05_Security_Performance/Security/test_security.py:90: assert 'csrf' in '<!doctype html>\n<html lang="en">\n<head>\n    <meta charset="utf-8">\n    <title>tasks — pytodo pro</title>\n    <link rel="stylesheet" href="/static/style.css">\n</head>\n<body>\n    <nav class="topnav">\n        <a class="brand" href="/">pytodo pro</a>\n        \n        <div class="nav-links">\n            <a href="/">tasks</a>\n            <a href="/dashboard">dashboard</a>\n            <span class="nav-user">alice</span>\n            <a href="/logout">log out</a>\n        </div>\n        \n    </nav>\n    <div class="container">\n        \n<div class="page-header">\n    <h1>my tasks</h1>\n    <a class="btn" href="/tasks/new">+ new task</a>\n</div>\n\n<form method="get" class="filters">\n    <select name="category" onchange="this.form.submit()">\n        <option value="">all categories</option>\n        \n        <option value="personal" >personal</option>\n        \n        <option value="study" >study</option>\n        \n        <option value="urgent" >urgent</option>\n        \n        <option value="work" >work</option>\n        \n    </select>\n    <select name="status" onchange="this.form.submit()">\n        <option value="">all statuses</option>\n        <option valu...ic/style.css">\n</head>\n<body>\n    <nav class="topnav">\n        <a class="brand" href="/">pytodo pro</a>\n        \n        <div class="nav-links">\n            <a href="/">tasks</a>\n            <a href="/dashboard">dashboard</a>\n            <span class="nav-user">alice</span>\n            <a href="/logout">log out</a>\n        </div>\n        \n    </nav>\n    <div class="container">\n        \n<h1>new task</h1>\n<form method="post" class="task-form">\n    <label>title</label>\n    <input type="text" name="title" value="" required>\n\n    <label>description</label>\n    <textarea name="description" rows="3"></textarea>\n\n    <label>category</label>\n    <select name="category_id">\n        <option value="">none</option>\n        \n        <option value="2" >personal</option>\n        \n        <option value="3" >study</option>\n        \n        <option value="4" >urgent</option>\n        \n        <option value="1" >work</option>\n        \n    </select>\n\n    <label>due date</label>\n    <input type="date" name="due_date" value="">\n\n    <button type="submit">create task</button>\n    <a class="btn-secondary" href="/">cancel</a>\n</form>\n\n    </div>\n</body>\n</html>'
+E   assert ('"pytodo-pro-dev-secret"' not in '"""\nPyTodo...ebug=True)\n'
+      
+      '"pytodo-pro-dev-secret"' is contained here:
+        """
+        PyTodo Pro — a complete, ready-to-test Flask task manager.
+        
+        Features: user accounts, categorized tasks with due dates, an urgency
+        dashboard, and a full JSON REST API — all already implemented. This...
+      
+      ...Full output truncated (477 lines hidden), use '-vv' to show)
+05_Security_Performance/Security/test_security.py:110: assert ('"pytodo-pro-dev-secret"' not in '"""\nPyTodo...ebug=True)\n'
+E   assert 500 == 400
+     +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+----------------------------- Captured stderr call -----------------------------
+[2026-11-24 20:42:22,776] ERROR in app: Exception on /api/tasks [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "app/app.py", line 130, in wrapper
+    return f(*args, **kwargs)
+  File "app/app.py", line 420, in api_create_task
+    return jsonify(row_to_task(row, get_category_name(db, row["category_id"]))), 201
+                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "app/app.py", line 94, in row_to_task
+    "urgency": compute_urgency(row["due_date"]) if not row["done"] else "Done",
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "app/helpers.py", line 31, in compute_urgency
+    due = datetime.strptime(due_date_str, "%Y-%m-%d").date()
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/_strptime.py", line 789, in _strptime_datetime
+    tt, fraction, gmtoff_fraction = _strptime(data_string, format)
+                                    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/_strptime.py", line 555, in _strptime
+    raise ValueError("time data %r does not match format %r" %
+                     (data_string, format))
+ValueError: time data '2026-13-45' does not match format '%Y-%m-%d'
+05_Security_Performance/Security/test_security.py:116: assert 500 == 400
+E   assert 201 in (400, 413)
+     +  where 201 = <WrapperTestResponse streamed [201 CREATED]>.status_code
+05_Security_Performance/Security/test_security.py:123: assert 201 in (400, 413)
+======================== 10 failed, 12 passed in 3.46s =========================
