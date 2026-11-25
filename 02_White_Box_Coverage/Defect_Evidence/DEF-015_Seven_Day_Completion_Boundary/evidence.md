@@ -5,7 +5,7 @@
 | Severity | Minor |
 | Found by | Fatin (WB, BUG-003) |
 | Related test cases | WB-001 (test_helpers.py) |
-| Status | Open - **REPRODUCED** on 2026-11-25 13:09:04 |
+| Status | Open - **REPRODUCED** on 2026-11-25 13:40:18 |
 | Environment | Python 3.14.7, Flask 3.0.3, SQLite (fresh temp DB), Windows 11 |
 | Reproduced by | `07_Test_Management/Defect_Evidence/reproduce_defects.py` (def015) |
 
@@ -15,17 +15,31 @@ Completed exactly 7 days ago counts (spec: inclusive).
 ## Actual (observed in this run)
 A task completed exactly 7 days ago returns False (age.days < n) and is missing from the 'completed in last 7 days' count.
 
-## Captured request / response trace
+## Terminal evidence (PNG)
+Requests replayed as the equivalent `curl` commands; every status code and body shown is the real response from this run.
+
+![Terminal evidence](terminal_evidence.png)
+
+## Root cause in source (PNG)
+
+![Faulty source lines](source_root_cause.png)
+
+## Captured request / response trace (text)
 ```text
-# helpers.completed_in_last_n_days(ts, n=7, now=2026-11-25 12:00:00)  -- spec: inclusive of exactly 7 days
-#   completed 6 days ago (2026-11-19 12:00:00) -> True   expected True   OK
-#   completed 7 days ago (2026-11-18 12:00:00) -> False   expected True   WRONG
-#   completed 8 days ago (2026-11-17 12:00:00) -> False   expected False   OK
-# setup: registered 'alice_d15' -> HTTP 201
+# Spec: a task counts if completed within the last 7 days, INCLUSIVE of exactly 7 days ago
+$ cd app && python -c "from datetime import datetime as D; from helpers import completed_in_last_n_days as f; now=D(2026,11,25,12); [print(d, f(ts, 7, now)) for d, ts in [(6,'2026-11-19 12:00:00'),(7,'2026-11-18 12:00:00'),(8,'2026-11-17 12:00:00')]]"
+    6 True
+    7 False
+    8 False
+# Expected: 6 True / 7 True / 8 False  ->  exactly 7 days ago is WRONG
+[1] >>> POST /api/register   json={'username': 'alice_d15', 'password': 'password123'}
+    <<< HTTP 201
+        {"id":17,"username":"alice_d15"}
 # setup: task completed, completed_at back-dated to exactly 7 days ago
-[1] >>> GET /api/dashboard
+[2] >>> GET /api/dashboard
     <<< HTTP 200
         {"completed_this_week":0,"due_soon":0,"open":0,"overdue":0,"total":1}
+# 1 task completed exactly 7 days ago, but completed_this_week = 0
 ```
 
 ## Root cause - faulty source lines (`>>` marks the defect)

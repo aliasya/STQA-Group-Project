@@ -50,19 +50,42 @@ def start_server():
     return srv, f"http://127.0.0.1:{srv.server_port}"
 
 
+LAST_TRACE = None
+
+
+def sess_name(sess):
+    if not getattr(sess, "name", None):
+        sess_name.n = getattr(sess_name, "n", 0) + 1
+        sess.name = f"client{sess_name.n}"
+    return sess.name
+
+
 class Trace:
-    """Records every request/response so it can be pasted into the evidence file."""
+    """Records every request/response: as text for evidence.md and as a terminal
+    transcript (equivalent curl commands + the real responses) for the PNG."""
 
     def __init__(self, base):
-        self.base, self.lines, self.n = base, [], 0
+        global LAST_TRACE
+        self.base, self.lines, self.n, self.term = base, [], 0, []
+        LAST_TRACE = self
 
     def note(self, text):
         self.lines.append(f"# {text}")
+        self.term.append(("comment", f"# {text}"))
+
+    def shell(self, cmd, output):
+        """Show a local command (grep / python -c) with the output computed by this script."""
+        self.lines.append(f"$ {cmd}")
+        self.term.append(("cmd", cmd))
+        for ln in (output or ["(no output)"]):
+            self.lines.append("    " + ln)
+            self.term.append(("out", ln))
 
     def call(self, sess, method, path, show_body=True, max_body=600, **kw):
+        import json as _json
+        from urllib.parse import unquote
         self.n += 1
         r = sess.request(method, self.base + path, allow_redirects=False, **kw)
-        from urllib.parse import unquote
         req = f"{method} {unquote(r.request.path_url)}"
         if "json" in kw:
             body = repr(kw["json"])
@@ -74,6 +97,38 @@ class Trace:
         if r.headers.get("Location"):
             resp += f"  Location: {r.headers['Location']}"
         self.lines.append(resp)
+        # ---- terminal transcript
+        jar = sess_name(sess) + ".jar"
+        cookie = f"-b {jar} -c {jar}"
+        if getattr(sess, "raw_cookie", None):
+            cookie = f"-b \"session={sess.raw_cookie[:48]}...\""
+        cmd = f"curl -s -i -X {method} \"{unquote(r.request.url)}\" {cookie}"
+        for h, v in (kw.get("headers") or {}).items():
+            cmd += f" -H \"{h}: {v}\""
+        if "json" in kw:
+            js = _json.dumps(kw["json"])
+            if len(js) > 160:
+                js = js[:120] + f"...<{len(js)} chars>..." + '"}'
+            cmd += f" -H \"Content-Type: application/json\" -d '{js}'"
+        if "data" in kw:
+            cmd += " -d \"" + "&".join(f"{k}={v}" for k, v in kw["data"].items()) + "\""
+        self.term.append(("cmd", cmd))
+        self.term.append(("status", f"HTTP/1.1 {r.status_code} {r.reason}", r.status_code))
+        self.term.append(("out", f"Content-Type: {r.headers.get('Content-Type', '')}"))
+        if r.headers.get("Location"):
+            self.term.append(("out", f"Location: {r.headers['Location']}"))
+        self.term.append(("out", ""))
+        if r.text:
+            txt = r.text.strip()
+            if not show_body:
+                txt = txt[:160] + (f" ... [{len(r.text)} chars]" if len(r.text) > 160 else "")
+            elif len(txt) > max_body:
+                txt = txt[:max_body] + f" ... [{len(r.text)} chars total]"
+            body = txt.splitlines()
+            if len(body) > 8:
+                body = body[:7] + [f"... ({len(body) - 7} more lines)"]
+            for ln in body:
+                self.term.append(("out", ln))
         if show_body and r.text:
             txt = r.text.strip()
             if len(txt) > max_body:
@@ -88,10 +143,105 @@ class Trace:
 
 def user(base, name, trace=None):
     s = requests.Session()
-    r = s.post(f"{base}/api/register", json={"username": name, "password": PW})
+    s.name = name
     if trace:
-        trace.note(f"setup: registered '{name}' -> HTTP {r.status_code}")
+        trace.call(s, "POST", "/api/register", json={"username": name, "password": PW})
+    else:
+        s.post(f"{base}/api/register", json={"username": name, "password": PW})
     return s
+
+
+# --------------------------------------------------------------------------- PNG rendering
+def _font(size, bold=False):
+    from PIL import ImageFont
+    names = (["consolab.ttf", "CascadiaMono.ttf"] if bold else ["consola.ttf", "CascadiaMono.ttf"]) + \
+            ["DejaVuSansMono-Bold.ttf" if bold else "DejaVuSansMono.ttf", "Menlo.ttc", "cour.ttf"]
+    for n in names:
+        for d in ("", "C:/Windows/Fonts/", "/usr/share/fonts/truetype/dejavu/", "/System/Library/Fonts/"):
+            try:
+                return ImageFont.truetype(d + n, size)
+            except OSError:
+                pass
+    return ImageFont.load_default()
+
+
+def _window(rows, title, path, cols=118, bg=(12, 12, 12), bar=(44, 44, 48)):
+    """rows: list of (text, fg, row_bg or None, bold). Draws a terminal-style window."""
+    from PIL import Image, ImageDraw
+    import textwrap
+    f, fb = _font(15), _font(15, True)
+    cw = max(1, int(round(f.getlength("M"))))
+    lh = 20
+    wrapped = []
+    for text, fg, rbg, bold in rows:
+        parts = textwrap.wrap(text, cols, subsequent_indent="  ", drop_whitespace=False,
+                              replace_whitespace=False, break_on_hyphens=False) or [""]
+        wrapped += [(pt, fg, rbg, bold) for pt in parts]
+    W = 28 + cols * cw + 28
+    H = 34 + 14 + len(wrapped) * lh + 18
+    img = Image.new("RGB", (W, H), bg)
+    d = ImageDraw.Draw(img)
+    d.rectangle([0, 0, W, 33], fill=bar)
+    for i, c in enumerate([(255, 95, 86), (255, 189, 46), (39, 201, 63)]):
+        d.ellipse([14 + i * 22, 11, 26 + i * 22, 23], fill=c)
+    d.text((W // 2, 17), title, fill=(200, 200, 205), font=_font(14), anchor="mm")
+    y = 34 + 14
+    for text, fg, rbg, bold in wrapped:
+        if rbg:
+            d.rectangle([0, y - 2, W, y + lh - 2], fill=rbg)
+        d.text((28, y), text, fill=fg, font=fb if bold else f)
+        y += lh
+    img.save(os.path.normpath(path), optimize=True)
+
+
+def render_terminal(term, did, title, path):
+    WHITE, GREY, CYAN = (242, 242, 242), (204, 204, 204), (97, 214, 214)
+    rows = [(f"# {did} - {title}", CYAN, None, True),
+            (f"# Reproduced {RUN_AT} against PyTodo Pro (fresh DB, port shown as default 5000); responses are the real server output", CYAN, None, False),
+            ("", GREY, None, False)]
+    for item in term:
+        kind = item[0]
+        if kind == "cmd":
+            if rows[-1][0] != "":
+                rows.append(("", GREY, None, False))
+            rows.append(("$ " + re.sub(r"127\.0\.0\.1:\d+", "127.0.0.1:5000", item[1]), WHITE, None, True))
+        elif kind == "status":
+            c = item[2]
+            col = (22, 198, 12) if c < 300 else (97, 214, 214) if c < 400 else (249, 241, 165) if c < 500 else (231, 72, 86)
+            rows.append((item[1], col, None, True))
+        elif kind == "comment":
+            if rows[-1][0] != "" and not rows[-1][0].startswith("#"):
+                rows.append(("", GREY, None, False))
+            rows.append((item[1], (118, 170, 118), None, False))
+        else:
+            rows.append((item[1], GREY, None, False))
+    rows += [("", GREY, None, False), ("$ _", (22, 198, 12), None, True)]
+    _window(rows, "bash - PyTodo Pro defect reproduction", path)
+
+
+def render_source(code_text, did, path):
+    rows = []
+    for ln in code_text.splitlines():
+        if ln.startswith(">>"):
+            rows.append((ln, (255, 255, 255), (110, 24, 32), True))
+        elif "|" in ln[:9]:
+            rows.append((ln, (212, 212, 212), None, False))
+        elif ln.strip():
+            rows.append((ln, (97, 175, 239), None, True))
+        else:
+            rows.append(("", (212, 212, 212), None, False))
+    rows += [("", (212, 212, 212), None, False),
+             ("  >> highlighted line = root cause of " + did, (231, 72, 86), None, False)]
+    _window(rows, f"Source code - {did} root cause", path, cols=110, bg=(30, 30, 30))
+
+
+def grep(path, pattern, flags=0):
+    out = []
+    with open(os.path.join(ROOT, path), encoding="utf-8") as f:
+        for i, ln in enumerate(f, 1):
+            if re.search(pattern, ln, flags):
+                out.append(f"{i}:{ln.rstrip()}")
+    return out or ["(no matches)"]
 
 
 def code(path, start, end, mark=()):
@@ -175,16 +325,15 @@ def def003(base, d, use_browser):
     t = Trace(base)
     a, b = user(base, "alice_d3", t), user(base, "bob_d3", t)
     tid = t.call(a, "POST", "/api/tasks", json={"title": "Audit me"}, show_body=False).json()["id"]
+    t.note("Security-relevant events: a cross-user delete and a failed login")
     t.call(b, "DELETE", f"/api/tasks/{tid}")
     t.call(b, "POST", "/api/login", json={"username": "alice_d3", "password": "wrong"})
-    # search the source tree for any logging / audit facility
-    src = open(os.path.join(APP_DIR, "app.py"), encoding="utf-8").read()
-    hits = [k for k in ("import logging", "logger", "app.logger", "audit") if k in src]
-    tables = re.findall(r"CREATE TABLE IF NOT EXISTS (\w+)", src)
-    t.note(f"Security-relevant events above (cross-user delete, failed login) were executed.")
-    t.note(f"Logging/audit keywords found in app/app.py: {hits or 'NONE'}")
-    t.note(f"Database tables created by init_db(): {tables} (no audit/event table)")
-    return dict(trace=t.text(), reproduced=not hits,
+    t.note("Is any of this recorded? Search the application for logging / audit code:")
+    hits = grep("app/app.py", r"logging|logger|audit", re.I)
+    t.shell('grep -n -i -E "logging|logger|audit" app/app.py', hits)
+    t.shell('grep -n "CREATE TABLE" app/app.py', grep("app/app.py", r"CREATE TABLE"))
+    t.note("Only users / categories / tasks tables - no audit or event table, no log file")
+    return dict(trace=t.text(), reproduced=hits == ["(no matches)"],
                 observed="No log entry, audit table or logger exists - the cross-user delete and failed login leave no record (repudiation threat).")
 
 
@@ -257,23 +406,28 @@ def def006(base, d, use_browser):
 
 def def007(base, d, use_browser):
     t = Trace(base)
-    s = user(base, "alice_d7", t)
-    cookie = s.cookies.get("session")
-    t.note(f"Session cookie issued by the app: {cookie[:60]}...")
-    # forge a session for user id 1 using the secret read from the source code
+    t.shell('grep -n -E "SECRET_KEY|app.run" app/app.py', grep("app/app.py", r"SECRET_KEY|app\.run"))
+    victim = user(base, "alice_d7", t)
+    t.call(victim, "POST", "/api/tasks", json={"title": "Alice bank PIN reminder"}, show_body=False)
     from flask.sessions import SecureCookieSessionInterface
     from flask import Flask
     fake = Flask("forge")
     fake.secret_key = "pytodo-pro-dev-secret"  # copied from app.py
     ser = SecureCookieSessionInterface().get_signing_serializer(fake)
-    forged = ser.dumps({"user_id": 1, "username": "forged"})
-    t.note("Attacker signs their own cookie with the hard-coded key: {'user_id': 1}")
+    real = ser.loads(victim.cookies.get("session"))
+    forged = ser.dumps({"user_id": real["user_id"], "username": "alice_d7"})
+    t.note("Attacker never logs in. Using only the key printed above, they sign their own session cookie:")
+    t.shell("python -c \"from flask import Flask; from flask.sessions import SecureCookieSessionInterface as S; "
+            "a=Flask('x'); a.secret_key='pytodo-pro-dev-secret'; "
+            f"print(S().get_signing_serializer(a).dumps({{'user_id': {real['user_id']}, 'username': 'alice_d7'}}))\"",
+            [forged])
     f = requests.Session()
+    f.name, f.raw_cookie = "attacker", forged
     f.cookies.set("session", forged)
     r = t.call(f, "GET", "/api/tasks", max_body=300)
-    t.note(f"app.run(debug=True) present in source: {'app.run(debug=True)' in open(os.path.join(APP_DIR, 'app.py'), encoding='utf-8').read()}")
-    return dict(trace=t.text(), reproduced=r.status_code == 200,
-                observed=f"A cookie forged with the key from the source code is accepted (HTTP {r.status_code}) - full impersonation of user id 1. Debug server enabled.")
+    ok = r.status_code == 200 and "Alice bank PIN reminder" in r.text
+    return dict(trace=t.text(), reproduced=ok,
+                observed=f"A cookie forged with the key from the source code is accepted (HTTP {r.status_code}) and returns Alice's private task - full account takeover without a password. Debug server also enabled.")
 
 
 def def008(base, d, use_browser):
@@ -397,7 +551,9 @@ def def013(base, d, use_browser):
     s = requests.Session()
     r8 = t.call(s, "POST", "/api/register", json={"username": "eight_chr", "password": "abcd1234"})
     r9 = t.call(s, "POST", "/api/register", json={"username": "nine_chr", "password": "abcd12345"})
-    t.note(f"helpers.is_valid_password('abcd1234') -> {helpers.is_valid_password('abcd1234')}  (spec: >= 8 is valid)")
+    t.shell("cd app && python -c \"from helpers import is_valid_password as v; print(v('abcd1234'), v('abcd12345'))\"",
+            [f"{helpers.is_valid_password('abcd1234')} {helpers.is_valid_password('abcd12345')}"])
+    t.note("Spec says 'at least 8 characters' -> the 8-character password must be True")
     shots = []
     if use_browser:
         from selenium.webdriver.common.by import By
@@ -418,7 +574,9 @@ def def014(base, d, use_browser):
     s = user(base, "alice_d14", t)
     today = date.today().isoformat()
     r = t.call(s, "POST", "/api/tasks", json={"title": "Due today task", "due_date": today})
-    t.note(f"helpers.compute_urgency('{today}', today={today}) -> {helpers.compute_urgency(today, date.today())!r}  (spec: 'Due Today')")
+    t.shell(f"cd app && python -c \"from helpers import compute_urgency; print(compute_urgency('{today}'))\"",
+            [helpers.compute_urgency(today, date.today())])
+    t.note("Spec: a task due today must be labelled 'Due Today'")
     s.post(base + "/api/tasks", json={"title": "Yesterday task", "due_date": (date.today() - timedelta(days=1)).isoformat()})
     s.post(base + "/api/tasks", json={"title": "Tomorrow task", "due_date": (date.today() + timedelta(days=1)).isoformat()})
     shots = []
@@ -440,10 +598,12 @@ def def015(base, d, use_browser):
     for days in (6, 7, 8):
         ts = (now - timedelta(days=days)).strftime("%Y-%m-%d %H:%M:%S")
         rows.append((days, ts, helpers.completed_in_last_n_days(ts, 7, now)))
-    t.note(f"helpers.completed_in_last_n_days(ts, n=7, now={now})  -- spec: inclusive of exactly 7 days")
-    for days, ts, res in rows:
-        exp = days <= 7
-        t.note(f"  completed {days} days ago ({ts}) -> {res}   expected {exp}   {'OK' if res == exp else 'WRONG'}")
+    t.note("Spec: a task counts if completed within the last 7 days, INCLUSIVE of exactly 7 days ago")
+    t.shell("cd app && python -c \"from datetime import datetime as D; from helpers import completed_in_last_n_days as f; "
+            "now=D(2026,11,25,12); [print(d, f(ts, 7, now)) for d, ts in "
+            "[(6,'2026-11-19 12:00:00'),(7,'2026-11-18 12:00:00'),(8,'2026-11-17 12:00:00')]]\"",
+            [f"{days} {res}" for days, ts, res in rows])
+    t.note("Expected: 6 True / 7 True / 8 False  ->  exactly 7 days ago is WRONG")
     # end-to-end via the dashboard API: complete a task now and backdate it 7 days in the DB
     s = user(base, "alice_d15", t)
     tid = s.post(base + "/api/tasks", json={"title": "Done a week ago"}).json()["id"]
@@ -455,6 +615,7 @@ def def015(base, d, use_browser):
     con.commit(); con.close()
     t.note("setup: task completed, completed_at back-dated to exactly 7 days ago")
     r = t.call(s, "GET", "/api/dashboard")
+    t.note("1 task completed exactly 7 days ago, but completed_this_week = %s" % r.json().get("completed_this_week"))
     wrong = rows[1][2] is False
     return dict(trace=t.text(), reproduced=wrong,
                 observed="A task completed exactly 7 days ago returns False (age.days < n) and is missing from the 'completed in last 7 days' count.")
@@ -623,8 +784,15 @@ def write_evidence(entry, res, folder_abs):
         lines.append("## Screenshots")
         for f, cap in res["shots"]:
             lines += [f"**{f}** - {cap}", "", f"![{cap}]({f})", ""]
-    lines += ["## Captured request / response trace", "```text", res["trace"], "```", "",
-              "## Root cause - faulty source lines (`>>` marks the defect)", "```text", codefn(), "```", ""]
+    src_text = codefn()
+    render_terminal(res["term"], did, title, os.path.join(folder_abs, "terminal_evidence.png"))
+    render_source(src_text, did, os.path.join(folder_abs, "source_root_cause.png"))
+    lines += ["## Terminal evidence (PNG)",
+              "Requests replayed as the equivalent `curl` commands; every status code and body shown is the real response from this run.",
+              "", "![Terminal evidence](terminal_evidence.png)", "",
+              "## Root cause in source (PNG)", "", "![Faulty source lines](source_root_cause.png)", "",
+              "## Captured request / response trace (text)", "```text", res["trace"], "```", "",
+              "## Root cause - faulty source lines (`>>` marks the defect)", "```text", src_text, "```", ""]
     if xrefs:
         lines.append("## Supporting evidence from other members")
         for x in xrefs:
@@ -655,6 +823,7 @@ def main():
             if use_browser:
                 DRIVER.delete_all_cookies()
             res = entry[8](base, out, use_browser)
+            res["term"] = LAST_TRACE.term
             write_evidence(entry, res, out)
             results.append((entry, res, out))
             print(f"{did}: {'REPRODUCED' if res['reproduced'] else 'NOT REPRODUCED'} -> {os.path.relpath(out, ROOT)}")
@@ -668,11 +837,11 @@ def main():
                f"Generated {RUN_AT} by `reproduce_defects.py` (fresh temporary database each run; the real app DB is not touched).",
                "Each defect's evidence lives in the folder of the test activity that found it. Re-run:",
                "", "```bash", "python 07_Test_Management/Defect_Evidence/reproduce_defects.py", "```", "",
-               "| ID | Title | Severity | Result | Screenshots | Evidence |", "|---|---|---|---|---|---|"]
+               "| ID | Title | Severity | Result | PNG evidence | Evidence |", "|---|---|---|---|---|---|"]
         for entry, res, out in results:
             rel = os.path.relpath(out, HERE).replace("\\", "/")
             idx.append(f"| {entry[0]} | {entry[2]} | {entry[3]} | {'Reproduced' if res['reproduced'] else '**Not reproduced**'} | "
-                       f"{len(res.get('shots', []))} | [{os.path.relpath(out, ROOT).replace(os.sep, '/')}]({rel}/evidence.md) |")
+                       f"terminal + source{' + ' + str(len(res.get('shots', []))) + ' browser' if res.get('shots') else ''} | [{os.path.relpath(out, ROOT).replace(os.sep, '/')}]({rel}/evidence.md) |")
         n = sum(r["reproduced"] for _, r, _ in results)
         idx += ["", f"**{n} / {len(results)} defects reproduced.**", ""]
         with open(os.path.join(HERE, "Defect_Evidence_Index.md"), "w", encoding="utf-8") as f:

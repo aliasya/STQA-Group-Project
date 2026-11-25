@@ -5,7 +5,7 @@
 | Severity | Moderate |
 | Found by | Alia (TC-SEC-002) |
 | Related test cases | TC-SEC-002 |
-| Status | Open - **REPRODUCED** on 2026-11-25 13:09:04 |
+| Status | Open - **REPRODUCED** on 2026-11-25 13:40:18 |
 | Environment | Python 3.14.7, Flask 3.0.3, SQLite (fresh temp DB), Windows 11 |
 | Reproduced by | `07_Test_Management/Defect_Evidence/reproduce_defects.py` (def008) |
 
@@ -13,15 +13,26 @@
 HTTP 429 / temporary lockout after N failed attempts.
 
 ## Actual (observed in this run)
-All 20 attempts answered 401 in 3.47s; the 21st (correct) attempt still logs in (HTTP 200) - unlimited guessing.
+All 20 attempts answered 401 in 8.67s; the 21st (correct) attempt still logs in (HTTP 200) - unlimited guessing.
 
-## Captured request / response trace
+## Terminal evidence (PNG)
+Requests replayed as the equivalent `curl` commands; every status code and body shown is the real response from this run.
+
+![Terminal evidence](terminal_evidence.png)
+
+## Root cause in source (PNG)
+
+![Faulty source lines](source_root_cause.png)
+
+## Captured request / response trace (text)
 ```text
-# setup: registered 'alice_d8' -> HTTP 201
+[1] >>> POST /api/register   json={'username': 'alice_d8', 'password': 'password123'}
+    <<< HTTP 201
+        {"id":11,"username":"alice_d8"}
 # 20 consecutive wrong passwords for alice_d8:
 # status codes: [401, 401, 401, 401, 401, 401, 401, 401, 401, 401, 401, 401, 401, 401, 401, 401, 401, 401, 401, 401]
-# total time 3.47s (no delay, no 429, no lockout)
-[1] >>> POST /api/login   json={'username': 'alice_d8', 'password': 'password123'}
+# total time 8.67s (no delay, no 429, no lockout)
+[2] >>> POST /api/login   json={'username': 'alice_d8', 'password': 'password123'}
     <<< HTTP 200
         {"id":11,"username":"alice_d8"}
 ```

@@ -5,7 +5,7 @@
 | Severity | Moderate |
 | Found by | Intan (DEF-003, STRIDE Repudiation) |
 | Related test cases | STRIDE-R |
-| Status | Open - **REPRODUCED** on 2026-11-25 13:09:04 |
+| Status | Open - **REPRODUCED** on 2026-11-25 13:40:18 |
 | Environment | Python 3.14.7, Flask 3.0.3, SQLite (fresh temp DB), Windows 11 |
 | Reproduced by | `07_Test_Management/Defect_Evidence/reproduce_defects.py` (def003) |
 
@@ -15,21 +15,40 @@ Logins, failed logins and deletions are recorded with user, time and target.
 ## Actual (observed in this run)
 No log entry, audit table or logger exists - the cross-user delete and failed login leave no record (repudiation threat).
 
-## Captured request / response trace
+## Terminal evidence (PNG)
+Requests replayed as the equivalent `curl` commands; every status code and body shown is the real response from this run.
+
+![Terminal evidence](terminal_evidence.png)
+
+## Root cause in source (PNG)
+
+![Faulty source lines](source_root_cause.png)
+
+## Captured request / response trace (text)
 ```text
-# setup: registered 'alice_d3' -> HTTP 201
-# setup: registered 'bob_d3' -> HTTP 201
-[1] >>> POST /api/tasks   json={'title': 'Audit me'}
+[1] >>> POST /api/register   json={'username': 'alice_d3', 'password': 'password123'}
     <<< HTTP 201
-[2] >>> DELETE /api/tasks/4
+        {"id":5,"username":"alice_d3"}
+[2] >>> POST /api/register   json={'username': 'bob_d3', 'password': 'password123'}
+    <<< HTTP 201
+        {"id":6,"username":"bob_d3"}
+[3] >>> POST /api/tasks   json={'title': 'Audit me'}
+    <<< HTTP 201
+# Security-relevant events: a cross-user delete and a failed login
+[4] >>> DELETE /api/tasks/4
     <<< HTTP 200
         {"result":"ok"}
-[3] >>> POST /api/login   json={'username': 'alice_d3', 'password': 'wrong'}
+[5] >>> POST /api/login   json={'username': 'alice_d3', 'password': 'wrong'}
     <<< HTTP 401
         {"error":"invalid credentials"}
-# Security-relevant events above (cross-user delete, failed login) were executed.
-# Logging/audit keywords found in app/app.py: NONE
-# Database tables created by init_db(): ['users', 'categories', 'tasks'] (no audit/event table)
+# Is any of this recorded? Search the application for logging / audit code:
+$ grep -n -i -E "logging|logger|audit" app/app.py
+    (no matches)
+$ grep -n "CREATE TABLE" app/app.py
+    58:            CREATE TABLE IF NOT EXISTS users (
+    63:            CREATE TABLE IF NOT EXISTS categories (
+    67:            CREATE TABLE IF NOT EXISTS tasks (
+# Only users / categories / tasks tables - no audit or event table, no log file
 ```
 
 ## Root cause - faulty source lines (`>>` marks the defect)

@@ -5,7 +5,7 @@
 | Severity | Moderate |
 | Found by | Alia (TC-GUI-114) |
 | Related test cases | TC-GUI-114 (CFG-04) |
-| Status | Open - **REPRODUCED** on 2026-11-25 13:09:04 |
+| Status | Open - **REPRODUCED** on 2026-11-25 13:40:18 |
 | Environment | Python 3.14.7, Flask 3.0.3, SQLite (fresh temp DB), Windows 11, Chrome headless (Selenium) |
 | Reproduced by | `07_Test_Management/Defect_Evidence/reproduce_defects.py` (def010) |
 
@@ -20,10 +20,21 @@ No viewport meta tag; on a phone the page is laid out at 980px and shrunk.
 
 ![Chrome Pixel 7 emulation: page laid out at 980px for a 412px-wide screen, so everything is scaled down.](screenshot_pixel7_task_list.png)
 
-## Captured request / response trace
+## Terminal evidence (PNG)
+Requests replayed as the equivalent `curl` commands; every status code and body shown is the real response from this run.
+
+![Terminal evidence](terminal_evidence.png)
+
+## Root cause in source (PNG)
+
+![Faulty source lines](source_root_cause.png)
+
+## Captured request / response trace (text)
 ```text
-# setup: registered 'alice_d10' -> HTTP 201
-[1] >>> GET /
+[1] >>> POST /api/register   json={'username': 'alice_d10', 'password': 'password123'}
+    <<< HTTP 201
+        {"id":13,"username":"alice_d10"}
+[2] >>> GET /
     <<< HTTP 200
 # <meta name="viewport"> present in rendered page: False
 # Pixel 7 emulation: screen.width=412px, layout viewport=980px

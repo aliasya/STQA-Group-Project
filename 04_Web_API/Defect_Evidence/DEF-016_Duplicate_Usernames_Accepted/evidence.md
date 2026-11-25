@@ -5,7 +5,7 @@
 | Severity | Moderate |
 | Found by | Fatin (API, BUG-004), Alia (TC-SEC-004) |
 | Related test cases | API-016, AUTO-004, TC-SEC-004 |
-| Status | Open - **REPRODUCED** on 2026-11-25 13:09:04 |
+| Status | Open - **REPRODUCED** on 2026-11-25 13:40:18 |
 | Environment | Python 3.14.7, Flask 3.0.3, SQLite (fresh temp DB), Windows 11 |
 | Reproduced by | `07_Test_Management/Defect_Evidence/reproduce_defects.py` (def016) |
 
@@ -15,7 +15,16 @@ Second registration rejected (409 / 'username taken').
 ## Actual (observed in this run)
 Same username registered twice (HTTP 201, 201, two different ids); second owner cannot log in (HTTP 401).
 
-## Captured request / response trace
+## Terminal evidence (PNG)
+Requests replayed as the equivalent `curl` commands; every status code and body shown is the real response from this run.
+
+![Terminal evidence](terminal_evidence.png)
+
+## Root cause in source (PNG)
+
+![Faulty source lines](source_root_cause.png)
+
+## Captured request / response trace (text)
 ```text
 [1] >>> POST /api/register   json={'username': 'alia_99', 'password': 'firstpass1'}
     <<< HTTP 201

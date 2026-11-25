@@ -5,7 +5,7 @@
 | Severity | Minor |
 | Found by | Hanisah (TC-ACC-005) |
 | Related test cases | TC-ACC-005 |
-| Status | Open - **REPRODUCED** on 2026-11-25 13:09:04 |
+| Status | Open - **REPRODUCED** on 2026-11-25 13:40:18 |
 | Environment | Python 3.14.7, Flask 3.0.3, SQLite (fresh temp DB), Windows 11, Chrome headless (Selenium) |
 | Reproduced by | `07_Test_Management/Defect_Evidence/reproduce_defects.py` (def017) |
 
@@ -20,7 +20,16 @@ No <label> has a for= attribute and no input has an id, so input.labels is empty
 
 ![Login form: labels (dashed) and inputs (solid) outlined in red have no programmatic link - screen readers announce the fields without a name.](screenshot_unlinked_labels.png)
 
-## Captured request / response trace
+## Terminal evidence (PNG)
+Requests replayed as the equivalent `curl` commands; every status code and body shown is the real response from this run.
+
+![Terminal evidence](terminal_evidence.png)
+
+## Root cause in source (PNG)
+
+![Faulty source lines](source_root_cause.png)
+
+## Captured request / response trace (text)
 ```text
 [1] >>> GET /login
     <<< HTTP 200

@@ -5,7 +5,7 @@
 | Severity | Critical |
 | Found by | Alia (TC-SEC-009) |
 | Related test cases | TC-SEC-009 |
-| Status | Open - **REPRODUCED** on 2026-11-25 13:09:04 |
+| Status | Open - **REPRODUCED** on 2026-11-25 13:40:18 |
 | Environment | Python 3.14.7, Flask 3.0.3, SQLite (fresh temp DB), Windows 11, Chrome headless (Selenium) |
 | Reproduced by | `07_Test_Management/Defect_Evidence/reproduce_defects.py` (def004) |
 
@@ -20,12 +20,23 @@ The title is rendered with |safe, so the stored <script> runs for every visit to
 
 ![Task list after login: the red banner was created by JavaScript stored in a task title.](screenshot_xss_executed.png)
 
-## Captured request / response trace
+## Terminal evidence (PNG)
+Requests replayed as the equivalent `curl` commands; every status code and body shown is the real response from this run.
+
+![Terminal evidence](terminal_evidence.png)
+
+## Root cause in source (PNG)
+
+![Faulty source lines](source_root_cause.png)
+
+## Captured request / response trace (text)
 ```text
-# setup: registered 'alice_d4' -> HTTP 201
-[1] >>> POST /api/tasks   json={'title': '<script>document.body.insertAdjacentHTML(\'afterbegin\',\'<h1 id=xss style="background:#c00;color:#fff;padding:12px">XSS EXECUTED - injected by task title</h1>\')</script>'}
+[1] >>> POST /api/register   json={'username': 'alice_d4', 'password': 'password123'}
     <<< HTTP 201
-[2] >>> GET /
+        {"id":7,"username":"alice_d4"}
+[2] >>> POST /api/tasks   json={'title': '<script>document.body.insertAdjacentHTML(\'afterbegin\',\'<h1 id=xss style="background:#c00;color:#fff;padding:12px">XSS EXECUTED - injected by task title</h1>\')</script>'}
+    <<< HTTP 201
+[3] >>> GET /
     <<< HTTP 200
 # Payload appears UNESCAPED in the HTML of '/': True
 # HTML line: <td class="title-cell"><script>document.body.insertAdjacentHTML('afterbegin','<h1 id=xss style="background:#c00;color:#fff;padding:12px">XSS EXECUTED - injected by task title</h1>')</script></td>

