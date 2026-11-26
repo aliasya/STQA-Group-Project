@@ -2,7 +2,7 @@
 
 > **Compiled by Member 1 (QA Lead).** Sections without a ⬜ marker are written. ⬜ sections are inserted from each member's folder. Before submission, re-check every number against `Metrics.md` and every DEF-ID against `Defect_Log.md`.
 
-**Course:** TEB3433 Software Testing and Quality Assurance · **Team:** Alia (QA Lead), `<<M2>>`, `<<M3>>`, `<<M4>>` · **Date:** `<<submission date>>`
+**Course:** TEB3433 Software Testing and Quality Assurance · **Team:** Alia (QA Lead), Hanisah (Test Design Coordinator), `<<M3>>`, `<<M4>>` · **Date:** `<<submission date>>`
 
 ---
 
@@ -37,9 +37,18 @@ Full plan: `07_Test_Management/Test_Plan.md`. Testing was risk-based. High-risk 
 ## 4. Results by phase
 
 ### 4.1 Black-box (Week 1)
+Manual black-box testing evaluated core user workflows (registration, login, task CRUD, filtering, search, and urgency classification) via the web UI in Chrome on Windows, without inspecting internal source code. **27 test cases** (`TC-BB-001` to `TC-BB-027`) were executed using Equivalence Partitioning (7), Boundary Value Analysis (12), decision tables (4), state-transition testing (3), and positive functional testing (1): **25 passed, 2 failed (92.59% pass rate)**.
 
-> ⬜ **INSERT (Member 2).** Summarise results from `01_Black_Box/README.md`: executed / passed / failed, key defects, interpretation (3–6 sentences or a short table).
-> Backup text: `_BACKUP_Members_2_3_4/08_Final_QA_Report/Final_QA_Report_COMPLETE.md` – same section.
+| Technique | Executed | Passed | Failed | Key Findings / Defect ID |
+|---|---|---|---|---|
+| Equivalence Partitioning (EP) | 7 | 7 | 0 | Valid/invalid inputs, no due date, and title search behaved as specified |
+| Boundary Value Analysis (BVA) | 12 | 10 | 2 | 8-char password rejected (`DEF-012`); due-today task labelled "Overdue" (`DEF-013`) |
+| Decision Table | 4 | 4 | 0 | Category (`Study`) + status (`Open`) filter combinations worked as expected |
+| State Transition | 3 | 3 | 0 | `Open → Done`, `Done → Open`, and task deletion transitions persisted accurately |
+| Functional Positive | 1 | 1 | 0 | Edits to completed tasks saved and retained `Done` status |
+| **Total** | **27** | **25** | **2** | **2 boundary defects confirmed** |
+
+**Interpretation:** BVA was the most effective black-box technique, uncovering both off-by-one boundary defects (`DEF-012` on password length `= 8` and `DEF-013` on `due == today`), which were later confirmed independently during white-box testing of `helpers.py`[cite: 18, 19, 25, 26, 82, 83, 103].
 
 ### 4.2 White-box and coverage (Week 2)
 
@@ -48,6 +57,7 @@ Full plan: `07_Test_Management/Test_Plan.md`. Testing was risk-based. High-risk 
 
 ### 4.3 GUI and compatibility (Week 3, Member 1)
 18 GUI checks on Chrome desktop: 14 Pass, 4 Fail. Forms, navigation, messages, confirmation dialogs and keyboard order work well. **No viewport meta tag**, so phones show a shrunken desktop page (DEF-010). Dates and badges wrap awkwardly (DEF-011). 2 of 6 planned configurations were executed. Firefox, Edge and a real phone are listed as residual risk.
+- **Member 2 Week 3 Checks (GUI, Compatibility & WCAG Accessibility):** Executed **16 manual checks** on Chrome and Edge (`TC-GUI-001–007`, `TC-COMP-001–003`, `TC-ACC-001–006`): **15 passed, 1 failed**. Core layouts, Edge cross-browser workflows, keyboard focus/navigation, 200% zoom, non-colour status cues, and text contrast (`16.83:1`) passed, while `TC-ACC-005` failed because `<label>` elements on the New Task form lack native `for`/`id` associations (`DEF-017`).
 
 ### 4.4 Usability and accessibility (Week 3)
 
