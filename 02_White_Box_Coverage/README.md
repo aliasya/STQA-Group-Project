@@ -1,6 +1,5 @@
 # Week 2 – White-Box Testing and Coverage  (Member 3: Automation/Tool Coordinator)
 
-> ⬜ **TO FILL by Member 3.** Replace every `<<...>>` and fill the empty table rows.
 > Backup copy (use only if needed): `_BACKUP_Members_2_3_4/02_White_Box_Coverage/`
 
 ## 1. Selected code units and justification
