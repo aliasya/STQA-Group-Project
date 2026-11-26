@@ -108,14 +108,14 @@ Full rules: `07_Test_Management/Team_Conventions.md`.
 |---|---|---|---|
 | 1 | Application overview, feature inventory, scope/risk matrix | M1 | ✅ Done – `01_Black_Box/Application_Overview.md` |
 | 1 | Black-box test cases + execution | M2 | ✅ Done – `01_Black_Box/README.md` (27 cases, 25 pass, 2 fail → DEF-012, DEF-013) |
-| 2 | White-box analysis, unit tests, coverage | M3 | ⬜ TO FILL – `02_White_Box_Coverage/README.md` |
+| 2 | White-box analysis, unit tests, coverage | M3 | ✅ Done – `02_White_Box_Coverage/README.md`(23 tests: 20 passed, 3 failed. 100% statement and branch coverage) |
 | 3 | GUI checklist + compatibility matrix | M1 | 🟡 Chrome desktop + mobile done; Firefox / Edge / real phone still to run |
 | 3 | Usability + accessibility | M4 | ⬜ TO FILL |
-| 4 | Web/API test suite | M3 | ⬜ TO FILL |
+| 4 | Web/API test suite | M3 | ✅ Done (23 manual API tests: 19 passed, 4 failed) |
 | 5 | STRIDE table | M4 | ⬜ TO FILL |
 | 5 | Security tests + findings | M1 | ✅ Done – 22 tests, 10 fail → DEF-001–009 |
-| 5 | Performance experiment | M3 / M4 | ⬜ TO FILL |
-| 6 | Automation + regression | M3 | ⬜ TO FILL |
+| 5 | Performance experiment | M3 / M4 | ✅ Done (840 requests, 0 recorded errors) |
+| 6 | Automation + regression | M3 | ✅ Done (14 automated tests: 11 passed, 3 failed) |
 | 7 | Test plan + strategy | M1 | ✅ Done (update §6 environment and §9 with real dates) |
 | 7 | RTM, master test repository | M2 | ✅ Done – `07_Test_Management/RTM.md` & `Master_Test_Repository.md` (17/17 REQs traced) |
 | 7 | Consolidated defect log | M4 | ⬜ TO FILL (M1 defects pre-filled) |
