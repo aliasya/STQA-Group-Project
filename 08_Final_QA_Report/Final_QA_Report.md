@@ -59,10 +59,13 @@ Manual black-box testing evaluated core user workflows (registration, login, tas
 18 GUI checks on Chrome desktop: 14 Pass, 4 Fail. Forms, navigation, messages, confirmation dialogs and keyboard order work well. **No viewport meta tag**, so phones show a shrunken desktop page (DEF-010). Dates and badges wrap awkwardly (DEF-011). 2 of 6 planned configurations were executed. Firefox, Edge and a real phone are listed as residual risk.
 - **Member 2 Week 3 Checks (GUI, Compatibility & WCAG Accessibility):** Executed **16 manual checks** on Chrome and Edge (`TC-GUI-001–007`, `TC-COMP-001–003`, `TC-ACC-001–006`): **15 passed, 1 failed**. Core layouts, Edge cross-browser workflows, keyboard focus/navigation, 200% zoom, non-colour status cues, and text contrast (`16.83:1`) passed, while `TC-ACC-005` failed because `<label>` elements on the New Task form lack native `for`/`id` associations (`DEF-017`).
 
-### 4.4 Usability and accessibility (Week 3)
+### 4.4 Usability and Accessibility (Week 3)
 
-> ⬜ **INSERT (Member 4).** Summarise results from `03_Special_Testing/Usability_Accessibility/README.md`: executed / passed / failed, key defects, interpretation (3–6 sentences or a short table).
-> Backup text: `_BACKUP_Members_2_3_4/08_Final_QA_Report/Final_QA_Report_COMPLETE.md` – same section.
+Usability evaluation showed that PyTodo Pro provided generally clear navigation, consistent interface layouts and understandable feedback across the tested workflows. The empty-title validation displayed an appropriate error message, and the Cancel function prevented unintended task creation in the tested scenario. However, inconsistencies in password guidance and task urgency information could confuse users.
+
+For accessibility, **6 test cases were executed, with 5 passed and 1 failed**, achieving an 83.3% pass rate. Keyboard navigation, visible focus indicators, 200% zoom, non-colour status indicators and the inspected text contrast passed. The failed test, **TC-ACC-005**, identified missing HTML label associations for the Title, Description, Category and Due Date fields, recorded as **DEF-017 (Minor)**. This may affect users relying on assistive technologies.
+
+Overall, the application demonstrated acceptable usability and basic accessibility in the selected test scenarios. However, improvements to form-label associations and further accessibility testing, particularly with screen readers and additional contrast checks, are recommended. These results do not establish full WCAG 2.1 AA compliance.
 
 ### 4.5 Web and API (Week 4)
 
