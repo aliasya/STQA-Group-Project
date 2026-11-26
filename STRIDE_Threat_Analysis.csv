@@ -1,7 +1,0 @@
-﻿STRIDE Category,Potential Threat in PyTodo Pro,Possible Impact
-Spoofing,An unauthorised person may attempt to access the application by using another user's credentials or an invalid session.,An attacker may gain access to another user's account and personal tasks.
-Tampering,A user may attempt to modify or delete tasks that belong to another user by changing the task ID in an API request.,Users may lose or have their task information changed without permission.
-Repudiation,"The application may not keep sufficient records of important user actions, such as creating, editing or deleting tasks.",It may be difficult to identify who performed an action when investigating a security incident.
-Information Disclosure,An API endpoint may expose task information belonging to other users if ownership checks are missing.,Private task information may be viewed by unauthorised users.
-Denial of Service,Repeated requests or unexpected input may cause the application or database to become unavailable or return errors.,Users may experience failed requests or be unable to use the application.
-Elevation of Privilege,"A normal user may attempt to perform actions beyond their permitted access, such as deleting another user's task through an API endpoint without proper ownership verification.","Users may gain access to actions they are not authorised to perform, resulting in unauthorised changes or deletion of other users' data."
