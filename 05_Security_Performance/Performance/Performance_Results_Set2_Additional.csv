@@ -1,0 +1,4 @@
+﻿Users,Total_Samples,Average_ms,P95_ms,P99_ms,Error_Rate_percent,Throughput_RPS
+100,2842,71,207,1165,0.0,48.2
+300,7834,279,1727,4967,43.52,130.2
+400,10442,279,1244,5189,59.08,173.8
