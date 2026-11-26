@@ -50,7 +50,7 @@ All commands run from the **repository root**. Each test gets its own temporary 
 | Black-box execution (Wk1) | *(manual, by M2 – see `01_Black_Box/README.md`)* | - (done) |
 | White-box + coverage (Wk2) | `pytest 02_White_Box_Coverage --cov=app --cov-branch --cov-report=term-missing` | `pytest _BACKUP_Members_2_3_4/02_White_Box_Coverage --cov=app --cov-branch --cov-report=term-missing` |
 | API suite (Wk4) | `pytest 04_Web_API -v` | `pytest _BACKUP_Members_2_3_4/04_Web_API -v` |
-| Performance (Wk5) | *(M3)* | `python _BACKUP_Members_2_3_4/05_Security_Performance/Performance/perf_test.py` |
+| Performance (Wk5) | python 05_Security_Performance/Performance/perf_test.py | `python _BACKUP_Members_2_3_4/05_Security_Performance/Performance/perf_test.py` |
 | Regression suite (Wk6) | `pytest -m regression -v` (finds tests in every folder) | same |
 | Selenium UI tests only | `pytest -m ui -v` (set `HEADLESS=0` to watch the browser) | same |
 | Metrics (Wk8) | *(M4)* | `python _BACKUP_Members_2_3_4/07_Test_Management/compute_metrics.py` |
