@@ -1,0 +1,6 @@
+Label,# Samples,Average,Min,Max,Std. Dev.,Error %,Throughput,Received KB/sec,Sent KB/sec,Avg. Bytes
+01 Register + Login,5,194,120,292,79.76,0.000%,5.31915,1.81,1.21,348.0
+02 View Task List (page),25,9,4,39,6.47,0.000%,.92469,3.05,0.20,3374.2
+03 Create Task,21,31,21,90,13.99,0.000%,.87191,0.39,0.32,461.7
+04 View Tasks (API),20,9,5,19,2.86,0.000%,.96353,0.88,0.21,937.1
+TOTAL,71,28,4,292,52.05,0.000%,2.47784,3.90,0.65,1613.2
