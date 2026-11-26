@@ -10,9 +10,9 @@ This repository holds every QA artefact (test cases, scripts, evidence, defects,
 | Member | Name | Role | Main responsibility |
 |---|---|---|---|
 | Member 1 | Alia | QA / Test Lead | Application overview, test planning, GUI & compatibility testing, security testing, final report, presentation |
-| Member 2 | `<<Member 2 name>>` | Test Design Coordinator | Black-box testing (EP, BVA, decision tables, state transitions), manual test cases, execution, RTM |
-| Member 3 | `<<Member 3 name>>` | Automation / Tool Coordinator | White-box + PyTest, coverage, API testing, performance execution, automated regression |
-| Member 4 | `<<Member 4 name>>` | Defect & Metrics Coordinator | Usability & accessibility, defect tracking, STRIDE, performance evaluation, metrics, risk |
+| Member 2 | Nur Hanisah | Test Design Coordinator | Black-box testing (EP, BVA, decision tables, state transitions), manual test cases, execution, RTM |
+| Member 3 | Fatin Nurfarahanani | Automation / Tool Coordinator | White-box + PyTest, coverage, API testing, performance execution, automated regression |
+| Member 4 | Intan Zahra Sofea | Defect & Metrics Coordinator | Usability & accessibility, defect tracking, STRIDE, performance evaluation, metrics, risk |
 
 > **Status of each part:** see section 6. Anything marked `⬜ TO FILL` is a blank section the owner must complete.
 
@@ -47,7 +47,7 @@ All commands run from the **repository root**. Each test gets its own temporary 
 | What | Command (main folder) | Until the owner delivers, use the backup |
 |---|---|---|
 | Security tests (Wk5, M1) | `pytest 05_Security_Performance/Security -v` | – (done) |
-| Black-box execution (Wk1) | *(manual, by M2)* | `python _BACKUP_Members_2_3_4/01_Black_Box/run_blackbox_tests.py` |
+| Black-box execution (Wk1) | *(manual, by M2 – see `01_Black_Box/README.md`)* | - (done) |
 | White-box + coverage (Wk2) | `pytest 02_White_Box_Coverage --cov=app --cov-branch --cov-report=term-missing` | `pytest _BACKUP_Members_2_3_4/02_White_Box_Coverage --cov=app --cov-branch --cov-report=term-missing` |
 | API suite (Wk4) | `pytest 04_Web_API -v` | `pytest _BACKUP_Members_2_3_4/04_Web_API -v` |
 | Performance (Wk5) | *(M3)* | `python _BACKUP_Members_2_3_4/05_Security_Performance/Performance/perf_test.py` |
@@ -107,7 +107,7 @@ Full rules: `07_Test_Management/Team_Conventions.md`.
 | Week | Deliverable | Owner | Status |
 |---|---|---|---|
 | 1 | Application overview, feature inventory, scope/risk matrix | M1 | ✅ Done – `01_Black_Box/Application_Overview.md` |
-| 1 | Black-box test cases + execution | M2 | ⬜ TO FILL – `01_Black_Box/README.md` |
+| 1 | Black-box test cases + execution | M2 | ✅ Done – `01_Black_Box/README.md` (27 cases, 25 pass, 2 fail → DEF-012, DEF-013) |
 | 2 | White-box analysis, unit tests, coverage | M3 | ⬜ TO FILL – `02_White_Box_Coverage/README.md` |
 | 3 | GUI checklist + compatibility matrix | M1 | 🟡 Chrome desktop + mobile done; Firefox / Edge / real phone still to run |
 | 3 | Usability + accessibility | M4 | ⬜ TO FILL |
@@ -117,7 +117,7 @@ Full rules: `07_Test_Management/Team_Conventions.md`.
 | 5 | Performance experiment | M3 / M4 | ⬜ TO FILL |
 | 6 | Automation + regression | M3 | ⬜ TO FILL |
 | 7 | Test plan + strategy | M1 | ✅ Done (update §6 environment and §9 with real dates) |
-| 7 | RTM, master test repository | M2 | ⬜ TO FILL (M1 rows pre-filled) |
+| 7 | RTM, master test repository | M2 | ✅ Done – `07_Test_Management/RTM.md` & `Master_Test_Repository.md` (17/17 REQs traced) |
 | 7 | Consolidated defect log | M4 | ⬜ TO FILL (M1 defects pre-filled) |
 | 8 | Metrics, risk, final report | M4 + M1 | 🟡 Report skeleton ready; member sections to insert |
 | 9 | ISO 25010, CI/CD, presentation, demo | M1 | 🟡 Plan + demo script ready; rehearse |
