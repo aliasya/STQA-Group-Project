@@ -84,8 +84,7 @@ Additional malformed-date and exception-handling paths would require separate ve
 | TC-WB-008 | Urgency | Today boundary | Due today | Due Today | Overdue | Fail | BUG-002 |
 | TC-WB-009 | Completion | Inside time window | Completed within 7 days | True | True | Pass | - |
 | TC-WB-010 | Completion | Seven-day boundary | Completed exactly 7 days ago | True | False | Fail | BUG-003 |
-|---|---|---|---|---|---|---|---|
-Overall execution: 23 unit tests — 20 passed, 3 failed.
+Overall execution | 23 unit tests — 20 passed, 3 failed. |
 
 ## 5. Automated test file
 Test framework: PyTest
