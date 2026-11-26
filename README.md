@@ -110,7 +110,7 @@ Full rules: `07_Test_Management/Team_Conventions.md`.
 | 1 | Black-box test cases + execution | M2 | ✅ Done – `01_Black_Box/README.md` (27 cases, 25 pass, 2 fail → DEF-012, DEF-013) |
 | 2 | White-box analysis, unit tests, coverage | M3 | ✅ Done – `02_White_Box_Coverage/README.md`(23 tests: 20 passed, 3 failed. 100% statement and branch coverage) |
 | 3 | GUI checklist + compatibility matrix | M1 | 🟡 Chrome desktop + mobile done; Firefox / Edge / real phone still to run |
-| 3 | Usability + accessibility | M4 | ⬜ TO FILL |
+| 3 | Usability + accessibility | M4 |  ✅ Done – usability review completed; accessibility: 6 test cases, 5 passed and 1 failed (83.3%) |
 | 4 | Web/API test suite | M3 | ✅ Done (23 manual API tests: 19 passed, 4 failed) |
 | 5 | STRIDE table | M4 | ✅ Done – 6 threats identified across all STRIDE categories |
 | 5 | Security tests + findings | M1 | ✅ Done – 22 tests, 10 fail → DEF-001–009 |
@@ -118,8 +118,8 @@ Full rules: `07_Test_Management/Team_Conventions.md`.
 | 6 | Automation + regression | M3 | ✅ Done (14 automated tests: 11 passed, 3 failed) |
 | 7 | Test plan + strategy | M1 | ✅ Done (update §6 environment and §9 with real dates) |
 | 7 | RTM, master test repository | M2 | ✅ Done – `07_Test_Management/RTM.md` & `Master_Test_Repository.md` (17/17 REQs traced) |
-| 7 | Consolidated defect log | M4 | ⬜ TO FILL (M1 defects pre-filled) |
-| 8 | Metrics, risk, final report | M4 + M1 | 🟡 Report skeleton ready; member sections to insert |
+| 7 | Consolidated defect log | M4 | ✅ Done – consolidated duplicate findings into 17 unique defects (4 Critical, 2 Major, 6 Moderate, 5 Minor) |
+| 8 | Metrics, risk, final report | M4 + M1 | 🟡 In Progress – consolidated test metrics, defect severity and risk evaluation prepared; final report sections and member contributions being compiled. |
 | 9 | ISO 25010, CI/CD, presentation, demo | M1 | 🟡 Plan + demo script ready; rehearse |
 
 > If a member cannot deliver, a complete version of their part is in `_BACKUP_Members_2_3_4/`. Copy it into the main folder (see that folder's README).
