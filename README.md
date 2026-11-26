@@ -112,7 +112,7 @@ Full rules: `07_Test_Management/Team_Conventions.md`.
 | 3 | GUI checklist + compatibility matrix | M1 | 🟡 Chrome desktop + mobile done; Firefox / Edge / real phone still to run |
 | 3 | Usability + accessibility | M4 | ⬜ TO FILL |
 | 4 | Web/API test suite | M3 | ✅ Done (23 manual API tests: 19 passed, 4 failed) |
-| 5 | STRIDE table | M4 | ⬜ TO FILL |
+| 5 | STRIDE table | M4 | ✅ Done – 6 threats identified across all STRIDE categories |
 | 5 | Security tests + findings | M1 | ✅ Done – 22 tests, 10 fail → DEF-001–009 |
 | 5 | Performance experiment | M3 / M4 | ✅ Done (840 requests, 0 recorded errors) |
 | 6 | Automation + regression | M3 | ✅ Done (14 automated tests: 11 passed, 3 failed) |
