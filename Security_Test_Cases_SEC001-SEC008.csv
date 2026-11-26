@@ -1,0 +1,9 @@
+﻿Test Case ID,Test Scenario,Expected Result,Actual Result,Status,Defect ID
+SEC-001,Access task API without authentication,Request should be rejected with HTTP 401.,HTTP 401 returned with an authentication error message.,Pass,
+SEC-002,Retrieve another user's task using its task ID,"Access should be denied, and the task should not be returned.",HTTP 404 returned with a not-found message.,Pass,
+SEC-003,Delete another user's task through the API,The system should prevent users from deleting tasks they do not own.,"HTTP 200 returned, and the other user's task was successfully deleted.",Fail,DEF-001
+SEC-004,Submit crafted SQL injection-oriented input through the task search API,The input should be handled safely without causing a server error or affecting the database query.,"HTTP 500 returned, with an SQLite programming error.",Fail,DEF-002
+SEC-005,Access task API after logging out,The previous session should no longer allow access to protected endpoints.,HTTP 401 returned after logout.,Pass,
+SEC-006,Edit another user's task through the web interface,The system should prevent access to another user's task.,User was redirected to their own dashboard.,Pass,
+SEC-007,View another user's task list and retrieve their task,Users should only be able to view their own tasks.,User B received an empty task list and HTTP 404 when requesting User A's task.,Pass,
+SEC-008,Review audit logging for important user actions,Important actions should have records that can support investigation.,No dedicated audit logging mechanism was identified in the inspected source code.,Finding,
