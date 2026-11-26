@@ -74,8 +74,19 @@ Manual black-box testing evaluated core user workflows (registration, login, tas
 
 ### 4.7 Performance (Week 5)
 
-> ⬜ **INSERT (Member 3 / Member 4).** Summarise results from `05_Security_Performance/Performance/README.md`: executed / passed / failed, key defects, interpretation (3–6 sentences or a short table).
-> Backup text: `_BACKUP_Members_2_3_4/08_Final_QA_Report/Final_QA_Report_COMPLETE.md` – same section.
+Performance testing was conducted using Apache JMeter to evaluate PyTodo Pro under different concurrent user loads. The baseline test with 50 users recorded an average response time of 22.8 ms, a P95 response time of 57.7 ms and a 0% error rate. During stress testing, 10 concurrent users was the highest tested load that met both performance targets (P95 below 500 ms and error rate below 1%). Beyond this level, the error rate increased significantly, reaching 98.34% at 400 users. Database locking errors were also observed during concurrent task creation, indicating limitations in SQLite write handling. However, the tests were conducted locally on the same laptop, so the results should not be treated as production capacity measurements.
+
+| Stress-test users | P95 response time | Error rate |
+|---:|---:|---:|
+| 5 | 144 ms | 0% |
+| 10 | 301 ms | 0% |
+| 25 | 1,082 ms | 0.13% |
+| 50 | 741 ms | 60.86% |
+| 100 | 308 ms | 88.84% |
+| 200 | 509 ms | 95.06% |
+| 400 | 125 ms | 98.34% |
+
+Note: At high loads, response times can appear lower because many requests fail quickly. Therefore, response time must be interpreted together with the error rate.
 
 ### 4.8 Automation and regression (Week 6)
 
@@ -84,13 +95,30 @@ Manual black-box testing evaluated core user workflows (registration, login, tas
 
 ## 5. Metrics
 
-> ⬜ **INSERT (Member 4).** Summarise results from `07_Test_Management/Metrics.md (counts, rates, charts)`: executed / passed / failed, key defects, interpretation (3–6 sentences or a short table).
-> Backup text: `_BACKUP_Members_2_3_4/08_Final_QA_Report/Final_QA_Report_COMPLETE.md` – same section.
+A total of 146 test cases were executed across the group's testing activities. Out of these, 116 passed and 30 failed, resulting in an overall pass rate of 79.45% and a failure rate of 20.55%. Security testing was the weakest area, with 12 out of 25 security test cases passing (48%). The STRIDE-related testing contributed 8 test cases, with 5 passed and 3 failed. These findings indicate that although most tested functions behaved as expected, security weaknesses and other defects still require attention.
+
+| Metric | Result |
+|---|---:|
+| Planned test cases | 146 |
+| Executed test cases | 146 |
+| Passed | 116 |
+| Failed | 30 |
+| Blocked | 0 |
+| Overall pass rate | 79.45% |
+| Overall failure rate | 20.55% |
+| Unique defects | 17 |
 
 ## 6. Defect analysis
 
-> ⬜ **INSERT (Member 4).** Summarise results from `07_Test_Management/Defect_Log.md (root-cause themes)`: executed / passed / failed, key defects, interpretation (3–6 sentences or a short table).
-> Backup text: `_BACKUP_Members_2_3_4/08_Final_QA_Report/Final_QA_Report_COMPLETE.md` – same section.
+The testing activities identified 17 unique defects after duplicate findings from different testing activities were consolidated. These consisted of 4 Critical, 2 Major, 6 Moderate and 5 Minor defects. The major root-cause themes included missing ownership checks, unsafe SQL query construction, insufficient input validation and incorrect boundary conditions. For example, an authenticated user could delete another user's task, SQL injection could expose other users' data, and certain date inputs could cause the task list to fail. All 17 defects remained open because the application was evaluated without applying fixes, meaning none could proceed to retesting or closure.
+
+| Severity | Number of defects |
+|---|---:|
+| Critical | 4 |
+| Major | 2 |
+| Moderate | 6 |
+| Minor | 5 |
+| **Total** | **17** |
 
 ## 7. ISO/IEC 25010 mapping (Week 9)
 
@@ -134,8 +162,7 @@ QA activities that would have **prevented** these defects:
 
 ## 10. Residual risk assessment
 
-> ⬜ **INSERT (Member 4).** Summarise results from `risk register`: executed / passed / failed, key defects, interpretation (3–6 sentences or a short table).
-> Backup text: `_BACKUP_Members_2_3_4/08_Final_QA_Report/Final_QA_Report_COMPLETE.md` – same section.
+Despite completing the planned testing activities, several risks remain unresolved. All 17 identified defects remain open, including four Critical defects that could affect data confidentiality, integrity and application functionality. In addition, code coverage was only measured for selected functions in `helpers.py`, while `app.py` coverage was not measured. Performance testing was conducted in a local environment using the same laptop for JMeter and the application, and therefore may not represent actual production workloads. Further testing is also required on Firefox, real mobile devices and other deployment environments. Security assessment was limited to the selected test cases and code review, without a dedicated vulnerability scanner or full penetration test. These limitations should be addressed before the application is considered ready for production use.
 
 ## 11. Prioritised recommendations
 
