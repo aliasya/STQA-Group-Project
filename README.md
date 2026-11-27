@@ -14,7 +14,7 @@ This repository holds every QA artefact (test cases, scripts, evidence, defects,
 | Member 3 | Fatin Nurfarahanani | Automation / Tool Coordinator | White-box + PyTest, coverage, API testing, performance execution, automated regression |
 | Member 4 | Intan Zahra Sofea | Defect & Metrics Coordinator | Usability & accessibility, defect tracking, STRIDE, performance evaluation, metrics, risk |
 
-> **Status of each part:** see section 6. Anything marked `⬜ TO FILL` is a blank section the owner must complete.
+> **Status of each part:** see section 6.
 
 ---
 
@@ -42,23 +42,32 @@ python app.py                    # open http://127.0.0.1:5000/
 
 ## 3. Running the automated tests
 
-All commands run from the **repository root**. Each test gets its own temporary database, so the tests never touch `app/pytodo_pro.db`.
+All commands run from the **repository root** with the venv active. Each PyTest test gets its own temporary database, so the tests never touch `app/pytodo_pro.db`.
 
-| What | Command (main folder) | Until the owner delivers, use the backup |
-|---|---|---|
-| Security tests (Wk5, M1) | `pytest 05_Security_Performance/Security -v` | – (done) |
-| Black-box execution (Wk1) | *(manual, by M2 – see `01_Black_Box/README.md`)* | - (done) |
-| White-box + coverage (Wk2) | `pytest 02_White_Box_Coverage --cov=app --cov-branch --cov-report=term-missing` | `pytest _BACKUP_Members_2_3_4/02_White_Box_Coverage --cov=app --cov-branch --cov-report=term-missing` |
-| API suite (Wk4) | `pytest 04_Web_API -v` | `pytest _BACKUP_Members_2_3_4/04_Web_API -v` |
-| Performance (Wk5) | python 05_Security_Performance/Performance/perf_test.py | `python _BACKUP_Members_2_3_4/05_Security_Performance/Performance/perf_test.py` |
-| Regression suite (Wk6) | `pytest -m regression -v` (finds tests in every folder) | same |
-| Selenium UI tests only | `pytest -m ui -v` (set `HEADLESS=0` to watch the browser) | same |
-| Metrics (Wk8) | *(M4)* | `python _BACKUP_Members_2_3_4/07_Test_Management/compute_metrics.py` |
-| Everything | `pytest` | |
-| GUI screenshots (Wk3, M1) | `python 03_Special_Testing/GUI_Compatibility/capture_gui_evidence.py --browser chrome --cfg CFG-01` | – |
+| What | Owner | Command | Expected result |
+|---|---|---|---|
+| Security tests (Wk5) | M1 | `pytest 05_Security_Performance/Security -v` | 22 tests: 12 pass, 10 fail |
+| White-box unit tests (Wk2) | M3 | `pytest 02_White_Box_Coverage -v` | 23 tests: 20 pass, 3 fail |
+| White-box coverage (Wk2) | M3 | `pytest 02_White_Box_Coverage --cov=app --cov-branch --cov-report=term-missing` | 100 % statement + branch coverage of `helpers.py` |
+| API suite = automated regression (Wk4/Wk6) | M3 | `pytest 04_Web_API -v` | 14 tests: 11 pass, 3 fail (AUTO-001…014, mapped in `06_Automation_Regression/Automation_Manual_Traceability.csv`) |
+| All automated suites | – | `pytest` | 59 tests: 43 pass, 16 fail |
+| Performance, Python scripts (Wk5) | M3 | Start the app (`cd app && python app.py`), then in a 2nd terminal: `python 05_Security_Performance/Performance/performance_test.py` (`performance_dashboard.py` asks for a test login) | 840 requests, 0 errors (M3's run) |
+| Performance, JMeter load/stress (Wk5) | M4 | With the app running, open `05_Security_Performance/Performance/PyTodo_Load_Test.jmx` in Apache JMeter 5.6.3. Analyse a run: `python 05_Security_Performance/Performance/analyze_results.py <results.jtl> [--steps]` | 10 users = highest tested load meeting P95 < 500 ms and < 1 % errors |
+| Defect reproduction, DEF-001 to DEF-017 | M1 | `python 07_Test_Management/Defect_Evidence/reproduce_defects.py` (add `--no-browser` to skip Selenium screenshots) | Rewrites every `Defect_Evidence/` folder and the index |
+| GUI screenshots (Wk3) | M1 | `python 03_Special_Testing/GUI_Compatibility/capture_gui_evidence.py --browser chrome --cfg CFG-01` | Screenshots in `GUI_Compatibility/screenshots/` |
 
-**Failing tests are expected.** Detection tests (security, API, white-box) assert the *correct* behaviour, so a failure means a confirmed defect. The defect ID is in each failing test's docstring.
-The **regression suite** marks known open defects as `xfail(strict=True)`. It stays green until a defect is fixed, then alerts us to retest it.
+**Manual (not automated) parts:** M2's black-box, GUI, compatibility and accessibility cases are in `01_Black_Box/Member2_Manual_Testing_and_RTM.xlsx`. M3's manual API cases are in `04_Web_API/Manual_API_Test_Index.csv`. M4's manual security cases SEC-001 to SEC-008 are in `Security_Test_Cases_SEC001-SEC008.csv`, with screenshots in `05_Security_Performance/Security/Security_Test_Cases_Evidence/`.
+
+**Failing tests are expected.** Every automated test asserts the *correct* behaviour, so each failure is a confirmed defect, not a broken test. Do not change assertions to make them pass.
+
+| Failing test(s) | Defect found |
+|---|---|
+| 10 security tests (`test_TC_SEC_002/004/005/007/008/009/010/013/014/015`) | see each test's docstring |
+| `test_password_exactly_8_characters`, `test_password_minimum_boundary` | 8-character password rejected |
+| `test_urgency_due_today` | task due today shown as overdue |
+| `test_completed_exactly_7_days_ago` | seven-day completion boundary |
+| `test_unauthorized_task_deletion` | cross-user task deletion |
+| `test_duplicate_username_registration` | duplicate usernames accepted |
 
 ---
 
@@ -80,12 +89,11 @@ app/                           ← PyTodo Pro (application under test, unmodifie
    Security/                   ← Wk5  Security test cases + PyTest (M1)
    STRIDE/                     ← Wk5  Threat table (M4)
    Performance/                ← Wk5  Load experiment (M3 run, M4 evaluate)
-06_Automation_Regression/      ← Wk6  Automation candidates, scripts, regression suite (M3)
+06_Automation_Regression/      ← Wk6  Automation-to-manual traceability + evidence (M3; the tests are in 04_Web_API)
 07_Test_Management/            ← Wk7  Test plan (M1), conventions (M1), RTM (M2), defect log (M4)
 08_Final_QA_Report/            ← Wk8  Final integrated report (M1 compiles)
 09_Presentation/               ← Wk9  Slides plan + live demo script (M1)
-_BACKUP_Members_2_3_4/         ← complete backup of Members 2-4 parts (see its README)
-.github/workflows/             ← Wk9  CI example: regression suite on every push
+.github/workflows/             ← Wk9  CI example: runs all automated suites on every push
 ```
 
 ---
@@ -113,13 +121,13 @@ Full rules: `07_Test_Management/Team_Conventions.md`.
 | 3 | Usability + accessibility | M4 |  ✅ Done – usability review completed; accessibility: 6 test cases, 5 passed and 1 failed (83.3%) |
 | 4 | Web/API test suite | M3 | ✅ Done (23 manual API tests: 19 passed, 4 failed) |
 | 5 | STRIDE table | M4 | ✅ Done – 6 threats identified across all STRIDE categories |
-| 5 | Security tests + findings | M1 | ✅ Done – 22 tests, 10 fail → DEF-001–009 |
-| 5 | Performance experiment | M3 / M4 | ✅ Done (840 requests, 0 recorded errors) |
-| 6 | Automation + regression | M3 | ✅ Done (14 automated tests: 11 passed, 3 failed) |
-| 7 | Test plan + strategy | M1 | ✅ Done (update §6 environment and §9 with real dates) |
+| 5 | Security tests + findings | M1 + M4 | ✅ Done – M1: 22 automated tests, 10 fail; M4: 8 manual cases SEC-001–008 (2 fail, 1 review finding) |
+| 5 | Performance experiment | M3 / M4 | ✅ Done – M3: 840 requests, 0 recorded errors; M4: JMeter baseline (50 users) + stress (5–400 users), 10 users = highest load meeting targets |
+| 6 | Automation + regression | M3 | ✅ Done (14 automated API tests: 11 passed, 3 failed; this is the regression suite) |
+| 7 | Test plan + strategy | M1 | 🟡 Written – still fill §6 environment and §9 real dates |
 | 7 | RTM, master test repository | M2 | ✅ Done – `07_Test_Management/RTM.md` & `Master_Test_Repository.md` (17/17 REQs traced) |
 | 7 | Consolidated defect log | M4 | ✅ Done – consolidated duplicate findings into 17 unique defects (4 Critical, 2 Major, 6 Moderate, 5 Minor) |
 | 8 | Metrics, risk, final report | M4 + M1 | 🟡 In Progress – consolidated test metrics, defect severity and risk evaluation prepared; final report sections and member contributions being compiled. |
 | 9 | ISO 25010, CI/CD, presentation, demo | M1 | 🟡 Plan + demo script ready; rehearse |
 
-> If a member cannot deliver, a complete version of their part is in `_BACKUP_Members_2_3_4/`. Copy it into the main folder (see that folder's README).
+> All four members have delivered. The old `_BACKUP_Members_2_3_4/` folder has been removed, so everything in the repository is the members' own work.

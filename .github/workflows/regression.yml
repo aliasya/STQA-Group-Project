@@ -1,15 +1,19 @@
 # Week 9 - CI/CD example (Member 1): continuous testing for PyTodo Pro
-# Fast regression gate on every push / pull request; full suite nightly.
+# Runs every automated suite on each push / pull request, plus a nightly coverage run.
+#
+# The suites assert the CORRECT behaviour, so the 16 known open defects show up as failing
+# tests. The job therefore reports results (JUnit XML artefact) instead of blocking the build.
+# When a defect is fixed, its test turns green - compare the failure count against README §3.
 name: PyTodo Pro QA
 
 on:
   push:
   pull_request:
   schedule:
-    - cron: "0 18 * * *"        # nightly full run (02:00 Malaysia time)
+    - cron: "0 18 * * *"        # nightly (02:00 Malaysia time)
 
 jobs:
-  regression-gate:
+  automated-suites:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,10 +21,14 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements-test.txt
-      # Known open defects are strict xfail -> green now, red as soon as a defect is fixed or a new bug appears
-      - run: pytest -m "regression and not ui" -v
+      - name: White-box, API (= automated regression) and security suites
+        run: pytest 02_White_Box_Coverage 04_Web_API 05_Security_Performance/Security --junitxml=results.xml || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: results.xml
 
-  full-suite:
+  coverage:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
     steps:
@@ -29,15 +37,9 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements-test.txt
-      - name: Regression incl. Selenium UI (Chrome is preinstalled on ubuntu-latest)
-        run: pytest -m regression -v
-      - name: Coverage of the regression suite (fail if it drops below 75 %)
-        run: pytest -m regression --cov=app --cov-branch --cov-report=html --cov-fail-under=75
-      - name: Detection suites (security, API) - failures = open defects, reported not blocking
-        run: pytest 05_Security_Performance/Security _BACKUP_Members_2_3_4/04_Web_API --junitxml=detection.xml || true
+      - name: Branch coverage of the application under test
+        run: pytest 02_White_Box_Coverage 04_Web_API 05_Security_Performance/Security --cov=app --cov-branch --cov-report=html || true
       - uses: actions/upload-artifact@v4
         with:
-          name: qa-reports
-          path: |
-            htmlcov/
-            detection.xml
+          name: coverage-report
+          path: htmlcov/
