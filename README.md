@@ -77,7 +77,6 @@ All commands run from the **repository root** with the venv active. Each PyTest 
 
 ```
 README.md                      ← this file
-MEMBER1_LEAD_GUIDE.md          ← Alia's step-by-step to-do list (QA Lead)
 conftest.py / pytest.ini       ← shared PyTest fixtures (fresh DB per test, live server, browser)
 requirements-test.txt
 app/                           ← PyTodo Pro (application under test, unmodified)
