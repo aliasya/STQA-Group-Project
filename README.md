@@ -130,4 +130,3 @@ Full rules: `07_Test_Management/Team_Conventions.md`.
 | 8 | Metrics, risk, final report | M4 + M1 | 🟡 In Progress – consolidated test metrics, defect severity and risk evaluation prepared; final report sections and member contributions being compiled. |
 | 9 | ISO 25010, CI/CD, presentation, demo | M1 | 🟡 Plan + demo script ready; rehearse |
 
-> All four members have delivered. The old `_BACKUP_Members_2_3_4/` folder has been removed, so everything in the repository is the members' own work.
