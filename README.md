@@ -1,9 +1,5 @@
 
 
-https://github.com/user-attachments/assets/15c164bd-e8e6-4b61-926c-1e29314f1199
-
-
-
 # PyTodo Pro – Software Quality Assurance Project (TEB3433 STQA)
 
 An independent QA evaluation of **PyTodo Pro**, a Flask task-management web app. We test the application; we don't change it.
@@ -136,3 +132,6 @@ Full rules: `07_Test_Management/Team_Conventions.md`.
 | 8 | Metrics, risk, final report | M4 + M1 | 🟡 In Progress – consolidated test metrics, defect severity and risk evaluation prepared; final report sections and member contributions being compiled. |
 | 9 | ISO 25010, CI/CD, presentation, demo | M1 | 🟡 Plan + demo script ready; rehearse |
 
+
+## 7. Live Demo
+https://github.com/user-attachments/assets/15c164bd-e8e6-4b61-926c-1e29314f1199
