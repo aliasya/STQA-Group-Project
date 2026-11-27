@@ -5,3 +5,5 @@ __pycache__/
 .coverage
 htmlcov/
 app/pytodo_pro.db
+Archieve/
+assets/

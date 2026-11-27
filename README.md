@@ -92,8 +92,8 @@ app/                           ← PyTodo Pro (application under test, unmodifie
    Performance/                ← Wk5  Load experiment (M3 run, M4 evaluate)
 06_Automation_Regression/      ← Wk6  Automation-to-manual traceability + evidence (M3; the tests are in 04_Web_API)
 07_Test_Management/            ← Wk7  Test plan (M1), conventions (M1), RTM (M2), defect log (M4)
-08_Final_QA_Report/            ← Wk8  Final integrated report (M1 compiles)
-09_Presentation/               ← Wk9  Slides plan + live demo script (M1)
+08_Final_QA_Report/            ← Wk8  Final group report (PDF) + integrated QA report (Markdown)
+09_Presentation/               ← Wk9  Final presentation slides (PPTX)
 .github/workflows/             ← Wk9  CI example: runs all automated suites on every push
 ```
 
@@ -129,7 +129,7 @@ Full rules: `07_Test_Management/Team_Conventions.md`.
 | 7 | RTM, master test repository | M2 | ✅ Done – `07_Test_Management/RTM.md` & `Master_Test_Repository.md` (17/17 REQs traced) |
 | 7 | Consolidated defect log | M4 | ✅ Done – consolidated duplicate findings into 17 unique defects (4 Critical, 2 Major, 6 Moderate, 5 Minor) |
 | 8 | Metrics, risk, final report | M4 + M1 | 🟡 In Progress – consolidated test metrics, defect severity and risk evaluation prepared; final report sections and member contributions being compiled. |
-| 9 | ISO 25010, CI/CD, presentation, demo | M1 | 🟡 Plan + demo script ready; rehearse |
+| 9 | ISO 25010, CI/CD, presentation, demo | M1 | 🟡 Slides ready (`09_Presentation/`); rehearse the live demo |
 
 
 ## 7. Live Demo
