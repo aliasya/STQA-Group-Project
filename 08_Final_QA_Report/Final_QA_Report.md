@@ -2,7 +2,7 @@
 
 > **Compiled by Member 1 (QA Lead).** Sections without a ⬜ marker are written. ⬜ sections are inserted from each member's folder. Before submission, re-check every number against `Metrics.md` and every DEF-ID against `Defect_Log.md`.
 
-**Course:** TEB3433 Software Testing and Quality Assurance · **Team:** Alia (QA Lead), Hanisah (Test Design Coordinator), `<<M3>>`, `<<M4>>` · **Date:** `<<submission date>>`
+**Course:** TEB3433 Software Testing and Quality Assurance · **Team:** Alia (QA Lead), Hanisah (Test Design Coordinator), Fatin (Automation Coordinator), Intan (Defect & Metrics Coordinator) · **Date:** 27 November 2026
 
 ---
 
