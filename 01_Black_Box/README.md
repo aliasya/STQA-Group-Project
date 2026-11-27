@@ -98,4 +98,4 @@ Logged in `07_Test_Management/Defect_Log.md` (local Week 1 IDs `BUG-001` and `BU
 * **DEF-013** *(local `BUG-002`)* — A task due today is misclassified as `"Overdue"` instead of `"Due Today"` (`TC-BB-013`, Moderate severity / Medium priority, Status: Open).
 
 ## 7. Evidence
-Screenshots in `01_Black_Box/evidence/` named `<TC-ID>_<browser>_<os>.png` (e.g., `TC-BB-004_chrome_win.png`, `TC-BB-013_chrome_win.png`).
+Screenshots in `01_Black_Box/Defect_Evidence/` 
